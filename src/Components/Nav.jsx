@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { Menu, X, Search, ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    setIsOpen(false);
   };
 
   return (
@@ -14,7 +21,10 @@ const Nav = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center h-16 relative">
           {/* Logo - Left */}
-          <div className="absolute left-0 flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
+          <div 
+            className="absolute left-0 flex items-center gap-2 cursor-pointer hover:opacity-80 transition"
+            onClick={() => handleNavigation('/')}
+          >
             <span className="text-3xl font-bold text-purple-600">↑</span>
             <div className="flex flex-col">
               <span className="text-xl font-bold text-slate-900 leading-tight">UpCurve</span>
@@ -24,22 +34,34 @@ const Nav = () => {
 
           {/* Desktop Menu - Center */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#home" className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group">
+            <button 
+              onClick={() => handleNavigation('/')}
+              className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
+            >
               Home
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </a>
-            <a href="#about" className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group">
+            </button>
+            <button 
+              onClick={() => handleNavigation('/about')}
+              className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
+            >
               About
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </a>
-            <a href="#services" className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group">
+            </button>
+            <button 
+              onClick={() => handleNavigation('/services')}
+              className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
+            >
               Services
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </a>
-            <a href="/contact" className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group">
+            </button>
+            <button 
+              onClick={() => handleNavigation('/contact')}
+              className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
+            >
               Contact
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </a>
+            </button>
           </div>
 
           {/* Mobile Menu Button & Cart - Right */}
@@ -75,34 +97,30 @@ const Nav = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-6 pt-4 space-y-3 border-t border-purple-100">
-            <a 
-              href="#home" 
-              onClick={() => setIsOpen(false)}
-              className="block px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition"
+            <button 
+              onClick={() => handleNavigation('/')}
+              className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
             >
               Home
-            </a>
-            <a 
-              href="#about" 
-              onClick={() => setIsOpen(false)}
-              className="block px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition"
+            </button>
+            <button 
+              onClick={() => handleNavigation('/about')}
+              className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
             >
               About
-            </a>
-            <a 
-              href="#services" 
-              onClick={() => setIsOpen(false)}
-              className="block px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition"
+            </button>
+            <button 
+              onClick={() => handleNavigation('/services')}
+              className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
             >
               Services
-            </a>
-            <a 
-              href="#contact" 
-              onClick={() => setIsOpen(false)}
-              className="block px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition"
+            </button>
+            <button 
+              onClick={() => handleNavigation('/contact')}
+              className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
             >
               Contact
-            </a>
+            </button>
           </div>
         )}
       </div>

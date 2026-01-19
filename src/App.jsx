@@ -8,22 +8,24 @@ import Scroll from './Components/Scroll.jsx'
 import Footer from './Components/Footer.jsx'
 import Contact from './Components/Contact.jsx'
 
+const Home = () => (
+  <>
+    <Intro />
+    <HomeService />
+    <Explore />
+    <Scroll />
+    
+  </>
+)
+
+
+
 const App = () => {
   return (
     <Router>
       <Nav />
       <Routes>
-        <Route 
-          path="/" 
-          element={
-            <>
-              <Intro />
-              <HomeService />
-              <Explore />
-              <Scroll />
-            </>
-          } 
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
