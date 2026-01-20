@@ -33,7 +33,7 @@ const Nav = () => {
           </div>
 
           {/* Desktop Menu - Center */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             <button 
               onClick={() => handleNavigation('/')}
               className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
@@ -56,6 +56,13 @@ const Nav = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
             </button>
             <button 
+              onClick={() => handleNavigation('/blog')}
+              className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
+            >
+              Blog
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
+            </button>
+            <button 
               onClick={() => handleNavigation('/contact')}
               className="text-slate-700 hover:text-purple-600 font-medium transition duration-300 relative group bg-none border-none cursor-pointer"
             >
@@ -64,19 +71,35 @@ const Nav = () => {
             </button>
           </div>
 
-          {/* Mobile Menu Button & Cart - Right */}
-          <div className="absolute right-0 flex items-center gap-4">
+          {/* Mobile Menu Button & Actions - Right */}
+          <div className="absolute right-0 flex items-center gap-3">
             {/* Search Box - Desktop */}
-            <div className="hidden md:flex items-center bg-slate-100 rounded-full px-4 py-2 border border-purple-200">
+            <div className="hidden lg:flex items-center bg-slate-100 rounded-full px-4 py-2 border border-purple-200">
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="bg-transparent text-slate-700 placeholder-slate-400 outline-none w-40"
+                className="bg-transparent text-slate-700 placeholder-slate-400 outline-none w-32"
               />
               <Search size={18} className="text-purple-600" />
             </div>
+
+            {/* Order Now Button - Desktop */}
+            <button 
+              onClick={() => handleNavigation('/order')}
+              className="hidden md:block px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 text-sm hover:scale-105"
+            >
+              Order Now
+            </button>
+
+            {/* Sign Up Button - Desktop */}
+            <button 
+              onClick={() => handleNavigation('/signup')}
+              className="hidden md:block px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 text-sm hover:scale-105"
+            >
+              Sign Up
+            </button>
 
             {/* Cart Icon */}
             <button className="text-purple-600 hover:text-purple-700 transition relative">
@@ -116,10 +139,28 @@ const Nav = () => {
               Services
             </button>
             <button 
+              onClick={() => handleNavigation('/blog')}
+              className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
+            >
+              Blog
+            </button>
+            <button 
               onClick={() => handleNavigation('/contact')}
               className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
             >
               Contact
+            </button>
+            <button 
+              onClick={() => handleNavigation('/order')}
+              className="block w-full text-left px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg transition hover:shadow-lg"
+            >
+              Order Now
+            </button>
+            <button 
+              onClick={() => handleNavigation('/signup')}
+              className="block w-full text-left px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-lg transition hover:bg-purple-600 hover:text-white"
+            >
+              Sign Up
             </button>
           </div>
         )}
