@@ -6,7 +6,7 @@ import { CartContext } from '../../context/CartContext';
 
 const Services = () => {
   const navigate = useNavigate();
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, cartItems } = useContext(CartContext);
   const [isVisible, setIsVisible] = useState({});
   const [counts, setCounts] = useState({
     projects: 0,
@@ -20,6 +20,7 @@ const Services = () => {
   const [servicesLoading, setServicesLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
+  const [addedItems, setAddedItems] = useState({}); // Track added items
   const observerRefs = useRef([]);
   const hasAnimated = useRef(false);
 
@@ -131,6 +132,11 @@ const Services = () => {
     }
   };
 
+  // Check if item is already in cart
+  const isInCart = (serviceId) => {
+    return cartItems.some(item => item.id === serviceId);
+  };
+
   // Handle service click - Add to cart
   const handleServiceClick = (service) => {
     const cartItem = {
@@ -144,12 +150,22 @@ const Services = () => {
 
     addToCart(cartItem);
     
+    // Mark this item as added
+    setAddedItems(prev => ({ ...prev, [service.id]: true }));
+    
     // Show notification
     setNotificationMessage(`✅ ${service.title} added to cart!`);
     setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 3000);
+    setTimeout(() => {
+      setShowNotification(false);
+      // Reset added state after animation
+      setTimeout(() => {
+        setAddedItems(prev => ({ ...prev, [service.id]: false }));
+      }, 1000);
+    }, 3000);
 
     console.log('🛒 Added to cart:', cartItem);
+    console.log('📦 Current cart items:', cartItems);
   };
 
   // Image loading handlers
@@ -179,6 +195,15 @@ const Services = () => {
   useEffect(() => {
     fetchServices();
   }, []);
+
+  // Load added items state from cart
+  useEffect(() => {
+    const added = {};
+    cartItems.forEach(item => {
+      added[item.id] = true;
+    });
+    setAddedItems(added);
+  }, [cartItems]);
 
   // Intersection Observer setup
   useEffect(() => {
@@ -345,53 +370,79 @@ const Services = () => {
           ) : (
             <div className="space-y-6">
               {services && services.length > 0 ? (
-                services.map((service, idx) => (
-                  <div 
-                    key={service.id}
-                    className={`bg-gradient-to-r from-purple-50 to-white rounded-2xl p-8 border-2 border-purple-200 hover:border-purple-400 transition-all duration-500 hover:shadow-xl group opacity-100 translate-x-0`}
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                      {/* Number Circle */}
-                      <div className="md:col-span-2">
-                        <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${service.color || 'from-purple-400 to-purple-600'} text-white flex items-center justify-center text-3xl font-bold shadow-lg group-hover:scale-110 transition-transform`}>
-                          {service.number}
+                services.map((service, idx) => {
+                  const isItemInCart = isInCart(service.id);
+                  const isRecentlyAdded = addedItems[service.id];
+                  
+                  return (
+                    <div 
+                      key={service.id}
+                      className={`bg-gradient-to-r from-purple-50 to-white rounded-2xl p-8 border-2 ${
+                        isItemInCart 
+                          ? 'border-green-400 bg-gradient-to-r from-green-50 to-white' 
+                          : 'border-purple-200'
+                      } hover:border-purple-400 transition-all duration-500 hover:shadow-xl group`}
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        {/* Number Circle */}
+                        <div className="md:col-span-2">
+                          <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${service.color || 'from-purple-400 to-purple-600'} text-white flex items-center justify-center text-3xl font-bold shadow-lg group-hover:scale-110 transition-transform`}>
+                            {service.number}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Content */}
-                      <div className="md:col-span-5">
-                        <p className="text-xs font-semibold text-purple-600 tracking-widest mb-2">{service.category}</p>
-                        <h3 className="text-2xl md:text-3xl font-bold text-purple-600 mb-2">{service.title}</h3>
-                        <p className="text-slate-600 mb-3">{service.description}</p>
-                        <p className="text-2xl font-bold text-green-600">₹{service.price || 5999}</p>
-                      </div>
+                        {/* Content */}
+                        <div className="md:col-span-5">
+                          <p className="text-xs font-semibold text-purple-600 tracking-widest mb-2">{service.category}</p>
+                          <h3 className="text-2xl md:text-3xl font-bold text-purple-600 mb-2">{service.title}</h3>
+                          <p className="text-slate-600 mb-3">{service.description}</p>
+                          <p className="text-2xl font-bold text-green-600">₹{service.price || 5999}</p>
+                        </div>
 
-                      {/* Clickable Section - ADD TO CART */}
-                      <div className="md:col-span-5 flex flex-col items-center justify-center gap-4">
-                        <button
-                          onClick={() => handleServiceClick(service)}
-                          className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 cursor-pointer hover:shadow-lg shadow-lg"
-                          title="Add to Cart"
-                        >
-                          <ShoppingCart size={28} className="text-white" />
-                        </button>
-                        
-                        {/* Google Rating */}
-                        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
-                          <span className="text-2xl">G</span>
-                          <div>
-                            <div className="flex gap-0.5">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
-                              ))}
+                        {/* Clickable Section - ADD TO CART */}
+                        <div className="md:col-span-5 flex flex-col items-center justify-center gap-4">
+                          <button
+                            onClick={() => handleServiceClick(service)}
+                            className={`w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 cursor-pointer shadow-lg relative ${
+                              isItemInCart 
+                                ? 'bg-gradient-to-br from-green-500 to-green-600 animate-pulse'
+                                : 'bg-gradient-to-br from-purple-400 to-purple-500'
+                            }`}
+                            title={isItemInCart ? "Already in Cart" : "Add to Cart"}
+                          >
+                            <ShoppingCart size={28} className="text-white" />
+                            
+                            {/* Added to cart tick mark */}
+                            {isItemInCart && (
+                              <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-green-500 flex items-center justify-center">
+                                <span className="text-green-600 text-xs font-bold">✓</span>
+                              </div>
+                            )}
+                          </button>
+                          
+                          {isRecentlyAdded && (
+                            <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                              Added!
                             </div>
-                            <p className="text-xs text-slate-600">4.8 Rating</p>
+                          )}
+                          
+                          {/* Google Rating */}
+                          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+                            <span className="text-2xl">G</span>
+                            <div>
+                              <div className="flex gap-0.5">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
+                                ))}
+                              </div>
+                              <p className="text-xs text-slate-600">4.8 Rating</p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="text-center py-12">
                   <p className="text-slate-600">No services found</p>
@@ -408,11 +459,11 @@ const Services = () => {
             }`}
           >
             <button 
-              onClick={handleGetStarted}
-              className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 mx-auto group hover:scale-105"
+              onClick={() => navigate('/cart')}
+              className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-green-500/30 transition-all duration-300 flex items-center gap-2 mx-auto group hover:scale-105"
             >
-              <span>SEE SERVICES</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <ShoppingCart size={20} />
+              <span>VIEW CART ({cartItems.length})</span>
             </button>
           </div>
         </div>
@@ -496,7 +547,7 @@ const Services = () => {
                 {technologies.map((tech, idx) => (
                   <div 
                     key={idx}
-                    className={`bg-white rounded-2xl p-8 border-2 border-purple-100 hover:border-purple-400 transition-all duration-500 hover:shadow-xl text-center group hover:scale-105 opacity-100 translate-y-0`}
+                    className={`bg-white rounded-2xl p-8 border-2 border-purple-100 hover:border-purple-400 transition-all duration-500 hover:shadow-xl text-center group hover:scale-105`}
                   >
                     <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${tech.color} flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all`}>
                       {tech.icon}
