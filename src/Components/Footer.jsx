@@ -89,7 +89,7 @@ const Footer = () => {
     }
   ];
 
-  // Services with specific routes - FIXED HERE
+  // Services with specific routes
   const servicesWithRoutes = [
     { 
       name: 'Custom Website Design', 
@@ -105,7 +105,7 @@ const Footer = () => {
     },
     { 
       name: 'Logo Design', 
-      route: '/logo'  // FIX: Changed to '/logo'
+      route: '/logo'
     }
   ];
 
@@ -151,34 +151,13 @@ const Footer = () => {
     navigate('/services');
   };
 
-  const handleAdminClick = () => {
-    if (isLoggedIn) {
-      navigate('/admin');
-    } else {
-      navigate('/login');
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      setIsLoggedIn(false);
-      setUser(null);
-      setShowAdminMenu(false);
-      navigate('/');
-    } catch (error) {
-      console.log('Logout error:', error);
-    }
+  const handleServiceClick = (route) => {
+    window.scrollTo(0, 0);
+    navigate(route);
   };
 
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Function to handle service navigation - FIXED HERE
-  const handleServiceClick = (route) => {
-    window.scrollTo(0, 0);
-    navigate(route);
   };
 
   return (
@@ -335,7 +314,7 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Services - UPDATED HERE */}
+            {/* Services */}
             <div 
               data-animate
               data-index="3"
@@ -416,30 +395,6 @@ const Footer = () => {
                   <p className="text-slate-700">Kolkata, India</p>
                 </div>
               </div>
-              
-              {/* Admin Status */}
-              <div className={`mt-6 pt-4 border-t border-purple-200 transform transition-all duration-1000 delay-500 ${
-                isVisible[4] ? 'opacity-100' : 'opacity-0'
-              }`}>
-                <p className="text-sm font-semibold text-slate-700 mb-2">Admin Access</p>
-                <div className="flex items-center gap-2 text-sm">
-                  {isLoggedIn ? (
-                    <div className="flex items-center gap-2 text-green-600 animate-pulse">
-                      <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                        <Lock size={12} className="text-green-500" />
-                      </div>
-                      <span className="font-semibold">Logged In</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center">
-                        <Lock size={12} />
-                      </div>
-                      <span>Not Logged In</span>
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
 
@@ -463,72 +418,19 @@ const Footer = () => {
                 </p>
               </div>
 
-              {/* Links and Admin Button */}
-              <div className="flex items-center gap-6">
-                {/* Policy Links */}
-                <div className={`flex items-center gap-4 text-sm transform transition-all duration-700 delay-100 ${
-                  isVisible[5] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-                }`}>
-                  {policyLinks.map((item, i) => (
-                    <button
-                      key={i}
-                      onClick={item.onClick}
-                      className="text-slate-600 hover:text-purple-600 transition-colors relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-purple-500 after:transition-all after:duration-300 hover:after:w-full"
-                    >
-                      {item.name}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Admin Button with Floating Animation */}
-                <div className="relative">
+              {/* Policy Links Only */}
+              <div className={`flex items-center gap-4 text-sm transform transition-all duration-700 delay-100 ${
+                isVisible[5] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
+              }`}>
+                {policyLinks.map((item, i) => (
                   <button
-                    onClick={handleAdminClick}
-                    onMouseEnter={() => isLoggedIn && setShowAdminMenu(true)}
-                    onMouseLeave={() => isLoggedIn && setShowAdminMenu(false)}
-                    className={`px-5 py-2.5 rounded-full font-semibold flex items-center gap-2 transition-all duration-300 transform hover:scale-105 ${
-                      isLoggedIn 
-                        ? 'bg-gradient-to-r from-green-600 to-green-500 text-white hover:shadow-lg hover:shadow-green-500/30 animate-pulse-subtle' 
-                        : 'bg-gradient-to-r from-purple-600 to-cyan-500 text-white hover:shadow-lg hover:shadow-purple-500/30'
-                    } ${isVisible[5] ? 'opacity-100' : 'opacity-0'}`}
+                    key={i}
+                    onClick={item.onClick}
+                    className="text-slate-600 hover:text-purple-600 transition-colors relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
-                    <Shield size={18} className="animate-bounce-subtle" />
-                    {isLoggedIn ? 'Admin Dashboard' : 'Admin Panel'}
+                    {item.name}
                   </button>
-
-                  {/* Admin Dropdown Menu */}
-                  {isLoggedIn && showAdminMenu && (
-                    <div 
-                      className="absolute bottom-full mb-2 right-0 w-48 bg-white rounded-lg shadow-xl border border-purple-100 py-2 z-50 animate-dropdown"
-                      onMouseEnter={() => setShowAdminMenu(true)}
-                      onMouseLeave={() => setShowAdminMenu(false)}
-                    >
-                      <div className="px-4 py-2 border-b border-slate-100">
-                        <p className="text-sm font-semibold text-slate-900">Welcome, Admin</p>
-                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-                      </div>
-                      {['Dashboard', 'Manage Blog', 'Analytics'].map((item, i) => (
-                        <Link 
-                          key={i}
-                          to={`/admin/${item.toLowerCase().replace(' ', '')}`} 
-                          className="block px-4 py-3 text-slate-700 hover:bg-purple-50 hover:text-purple-600 transition-all duration-300 flex items-center gap-2 group"
-                          onClick={() => setShowAdminMenu(false)}
-                        >
-                          <span className="w-1 h-1 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                          <span className="group-hover:translate-x-1 transition-transform">{item}</span>
-                        </Link>
-                      ))}
-                      <hr className="my-2 border-t border-slate-200" />
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-all duration-300 flex items-center gap-2 group"
-                      >
-                        <LogOut size={16} className="group-hover:rotate-12 transition-transform" />
-                        <span className="group-hover:translate-x-1 transition-transform">Sign Out</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                ))}
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Star, ArrowUpRight, Loader } from 'lucide-react';
+import { Star, ShoppingCart, Loader } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { CartContext } from '../../context/CartContext';
 
@@ -114,7 +114,6 @@ const Services = () => {
       console.log('✅ Services fetched:', data);
       
       if (data && data.length > 0) {
-        // Add price if not exists
         const servicesWithPrice = data.map(service => ({
           ...service,
           price: service.price || 5999
@@ -139,7 +138,8 @@ const Services = () => {
       title: service.title,
       category: service.category,
       price: service.price || 5999,
-      number: service.number
+      number: service.number,
+      description: service.description
     };
 
     addToCart(cartItem);
@@ -337,7 +337,7 @@ const Services = () => {
             <p className="text-slate-600 mt-4">Showing {services.length} services</p>
           </div>
 
-          {/* Services List - CLICKABLE */}
+          {/* Services List - Database se data */}
           {servicesLoading ? (
             <div className="flex justify-center items-center py-20">
               <Loader className="w-12 h-12 text-purple-600 animate-spin" />
@@ -359,30 +359,22 @@ const Services = () => {
                       </div>
 
                       {/* Content */}
-                      <div className="md:col-span-7">
+                      <div className="md:col-span-5">
                         <p className="text-xs font-semibold text-purple-600 tracking-widest mb-2">{service.category}</p>
                         <h3 className="text-2xl md:text-3xl font-bold text-purple-600 mb-2">{service.title}</h3>
-                        <p className="text-slate-600">{service.description}</p>
-                        <p className="text-xl font-bold text-green-600 mt-3">₹{service.price || 5999}</p>
+                        <p className="text-slate-600 mb-3">{service.description}</p>
+                        <p className="text-2xl font-bold text-green-600">₹{service.price || 5999}</p>
                       </div>
 
-                      {/* Clickable Section */}
-                      <div className="md:col-span-3 flex flex-col items-center gap-4">
-                        <div className="relative w-32 h-32 rounded-full border-4 border-purple-300 bg-gradient-to-br from-purple-50 to-white flex items-center justify-center">
-                          <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none">
-                            <circle cx="50" cy="35" r="12" fill="#A78BFA"/>
-                            <path d="M35 65 Q35 45 50 45 Q65 45 65 65 L60 80 L40 80 Z" fill="#34D399"/>
-                            <rect x="55" y="55" width="15" height="25" rx="2" fill="#10B981" stroke="#059669" strokeWidth="1"/>
-                            <circle cx="62.5" cy="75" r="1.5" fill="#D1FAE5"/>
-                            <circle cx="30" cy="40" r="6" fill="#E0E7FF" stroke="#6366F1" strokeWidth="1"/>
-                            <text x="30" y="43" fontSize="8" fill="#6366F1" textAnchor="middle" fontWeight="bold">$</text>
-                            <circle cx="25" cy="60" r="5" fill="#E0E7FF" stroke="#6366F1" strokeWidth="1"/>
-                            <text x="25" y="62.5" fontSize="6" fill="#6366F1" textAnchor="middle" fontWeight="bold">$</text>
-                          </svg>
-                          <div className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-lg">
-                            <span className="text-white text-xl">💰</span>
-                          </div>
-                        </div>
+                      {/* Clickable Section - ADD TO CART */}
+                      <div className="md:col-span-5 flex flex-col items-center justify-center gap-4">
+                        <button
+                          onClick={() => handleServiceClick(service)}
+                          className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 cursor-pointer hover:shadow-lg shadow-lg"
+                          title="Add to Cart"
+                        >
+                          <ShoppingCart size={28} className="text-white" />
+                        </button>
                         
                         {/* Google Rating */}
                         <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
@@ -393,18 +385,9 @@ const Services = () => {
                                 <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
                               ))}
                             </div>
-                            <p className="text-xs text-slate-600">4.8 Rating on Google</p>
+                            <p className="text-xs text-slate-600">4.8 Rating</p>
                           </div>
                         </div>
-
-                        {/* CLICKABLE BUTTON - Add to Cart */}
-                        <button
-                          onClick={() => handleServiceClick(service)}
-                          className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 cursor-pointer hover:shadow-lg"
-                          title="Add to Cart"
-                        >
-                          <ArrowUpRight size={24} className="text-white" />
-                        </button>
                       </div>
                     </div>
                   </div>

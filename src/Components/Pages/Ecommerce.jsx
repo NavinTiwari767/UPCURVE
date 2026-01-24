@@ -54,22 +54,24 @@ const Ecommerce = () => {
     <div className="w-full">
       {/* Hero Section */}
       <div 
-        className="relative w-full h-80 bg-cover bg-center flex flex-col justify-center items-center"
+        className="relative w-full h-80 bg-cover bg-center flex flex-col justify-center items-center px-4"
         style={{
-          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1200&h=500&fit=crop")',
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1200&h=500&fit=crop")',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">ECommerce Website Design</h1>
+        <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-center drop-shadow-lg">
+          ECommerce Website Design
+        </h1>
         
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-white text-sm md:text-base flex-wrap justify-center">
-          <Link to="/" className="hover:text-purple-300 transition-colors">Home</Link>
+        <div className="flex items-center gap-2 text-white text-sm md:text-base flex-wrap justify-center bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
+          <Link to="/" className="hover:text-purple-300 transition-colors font-medium">Home</Link>
           <ChevronRight size={18} />
-          <Link to="/services" className="hover:text-purple-300 transition-colors">Services</Link>
+          <Link to="/services" className="hover:text-purple-300 transition-colors font-medium">Services</Link>
           <ChevronRight size={18} />
-          <span className="text-orange-300 font-semibold">ECommerce Website</span>
+          <span className="text-orange-300 font-bold">ECommerce Website</span>
         </div>
       </div>
 
@@ -375,7 +377,7 @@ const Ecommerce = () => {
             <h3 className="text-3xl font-bold text-slate-900">Explore Our Other Services</h3>
             <button
               onClick={handleServicesClick}
-              className="text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-2 group"
+              className="text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-2 group transition-colors"
             >
               View All Services
               <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
@@ -400,13 +402,7 @@ const Ecommerce = () => {
                   </h4>
                   
                   <button 
-                    onClick={() => {
-                      window.scrollTo(0, 0);
-                      navigate(`/${product.name.toLowerCase().includes('logo') ? 'logo' : 
-                              product.name.toLowerCase().includes('business') ? 'business' :
-                              product.name.toLowerCase().includes('custom') ? 'custom' :
-                              product.name.toLowerCase().includes('personal') ? 'personal' : 'services'}`);
-                    }}
+                    onClick={handleServicesClick}
                     className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white text-sm rounded-full font-semibold hover:shadow-lg transition-all hover:scale-105"
                   >
                     Learn More
