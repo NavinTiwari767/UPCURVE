@@ -93,6 +93,14 @@ const About = () => {
     }
   };
 
+  const handleExploreMore = () => {
+    navigate('/services');
+  };
+
+  const handleLetsGetStarted = () => {
+    navigate('/contact');
+  };
+
   return (
     <div className="w-full bg-gradient-to-br from-white via-purple-50 to-blue-50">
       {/* Hero Section */}
@@ -102,6 +110,7 @@ const About = () => {
             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
             alt="Team collaboration"
             className="w-full h-full object-cover"
+            style={{ objectPosition: 'center 30%' }} // Adjust vertical position
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 to-slate-900/50"></div>
         </div>
@@ -154,6 +163,7 @@ const About = () => {
                   src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                   alt="Team working together"
                   className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-700"
+                  style={{ objectPosition: 'center 25%' }} // Adjust vertical position
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent"></div>
               </div>
@@ -177,7 +187,10 @@ const About = () => {
                 <p className="text-slate-500 text-xs">compared to last week</p>
               </div>
 
-              <button className="mt-6 px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group hover:scale-105">
+              <button 
+                onClick={handleExploreMore}
+                className="mt-6 px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group hover:scale-105"
+              >
                 <span>EXPLORE MORE</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </button>
@@ -215,6 +228,7 @@ const About = () => {
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                   alt="Professional portrait"
                   className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-700"
+                  style={{ objectPosition: 'center 20%' }} // Adjust vertical position
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 to-transparent"></div>
               </div>
@@ -260,6 +274,7 @@ const About = () => {
                           src={`https://images.unsplash.com/photo-${idx === 0 ? '1573497019940-1c28c88b4f3e' : idx === 1 ? '1519085360753-af0119f7c' : '1573164713714-d95e436ab8d6'}?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80`}
                           alt={service.title}
                           className="w-full h-full object-cover"
+                          style={{ objectPosition: 'center 30%' }} // Adjust vertical position
                         />
                       </div>
                       <div className={`absolute -top-2 -right-2 w-10 h-10 rounded-full bg-gradient-to-br ${service.color} flex items-center justify-center text-white`}>
@@ -289,6 +304,7 @@ const About = () => {
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
               alt="Team collaboration"
               className="w-full h-full object-cover"
+              style={{ objectPosition: 'center 35%' }} // Adjust vertical position
             />
             <div className="absolute inset-0 bg-gradient-to-r from-purple-900/60 to-slate-900/60"></div>
             
@@ -322,6 +338,7 @@ const About = () => {
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                   alt="Professional"
                   className="w-full h-[500px] object-cover"
+                  style={{ objectPosition: 'center 25%' }} // Adjust vertical position
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
               </div>
@@ -338,7 +355,10 @@ const About = () => {
               <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
                 Ready To Experience<br />Upstage Yourself?
               </h2>
-              <button className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group hover:scale-105">
+              <button 
+                onClick={handleLetsGetStarted}
+                className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group hover:scale-105"
+              >
                 <span>LET'S GET STARTED</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </button>
@@ -364,6 +384,7 @@ const About = () => {
                     src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
                     alt="Logon D"
                     className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center 25%' }} // Adjust vertical position
                   />
                 </div>
                 <div>

@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Play, CheckCircle, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Intro = () => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState({});
+  const [showVideo, setShowVideo] = useState(false);
   const observerRefs = useRef([]);
 
   useEffect(() => {
@@ -34,8 +37,45 @@ const Intro = () => {
     }
   };
 
+  // Handle Contact Us Click
+  const handleContactClick = () => {
+    navigate('/contact');
+    window.scrollTo(0, 0);
+  };
+
+  // Handle Watch Video Click
+  const handleWatchVideo = () => {
+    setShowVideo(true);
+  };
+
   return (
     <div className="w-full">
+      {/* Video Modal */}
+      {showVideo && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-4xl">
+            <button 
+              onClick={() => setShowVideo(false)}
+              className="ml-auto block text-white text-3xl mb-4 hover:text-gray-300 transition"
+            >
+              ✕
+            </button>
+            <div className="relative w-full bg-black rounded-xl overflow-hidden">
+              <iframe
+                width="100%"
+                height="500"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                title="Our Marketing Services"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-white via-blue-50 to-purple-50 py-20 px-4 overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -57,13 +97,19 @@ const Intro = () => {
                 We are 120+ professional software engineers with more than 5 years of experience in delivering superior products. Believe in because you've seen it. Here are real numbers.
               </p>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - CLICKABLE */}
               <div className="flex gap-4 pt-4">
-                <button className="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
+                <button 
+                  onClick={handleContactClick}
+                  className="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
                   <span>Contact Us</span>
                   <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
                 </button>
-                <button className="group flex items-center gap-3 px-6 py-3 border-2 border-purple-600 text-purple-600 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 hover:scale-105">
+                <button 
+                  onClick={handleWatchVideo}
+                  className="group flex items-center gap-3 px-6 py-3 border-2 border-purple-600 text-purple-600 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
                   <Play size={20} className="fill-current group-hover:scale-110 transition-transform" />
                   Watch Video
                 </button>
@@ -93,7 +139,7 @@ const Intro = () => {
                 {/* Gradient Background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-200 via-pink-100 to-purple-100 rounded-3xl blur-3xl opacity-60 animate-pulse-slow"></div>
                 
-                {/* Main Image - UPDATED with better image */}
+                {/* Main Image */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl transform transition-all duration-500 hover:scale-105">
                   <img 
                     src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
@@ -109,12 +155,14 @@ const Intro = () => {
                   </div>
                 </div>
 
-               
-
-                {/* Purple Circle */}
-                <div className="absolute -right-6 bottom-20 w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full shadow-lg flex items-center justify-center animate-bounce-slow cursor-pointer hover:scale-110 transition-transform">
-                  <Play size={24} className="text-white" />
-                </div>
+                {/* Purple Circle - CLICKABLE VIDEO BUTTON */}
+                <button 
+                  onClick={handleWatchVideo}
+                  className="absolute -right-6 bottom-20 w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full shadow-lg flex items-center justify-center animate-bounce-slow hover:scale-110 transition-transform cursor-pointer group"
+                  title="Watch Video"
+                >
+                  <Play size={24} className="text-white group-hover:scale-125 transition-transform" />
+                </button>
               </div>
             </div>
           </div>
@@ -143,9 +191,9 @@ const Intro = () => {
               {/* Image Grid */}
               <div className="mt-8">
                 <div className="grid grid-cols-2 gap-4">
-                  {/* Main Image - UPDATED */}
+                  {/* Main Image */}
                   <div className="col-span-2">
-                    <div className="relative rounded-2xl overflow-hidden shadow-xl h-64 group">
+                    <div className="relative rounded-2xl overflow-hidden shadow-xl h-64 group cursor-pointer">
                       <img 
                         src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
                         alt="Modern digital marketing office workspace"
@@ -155,8 +203,8 @@ const Intro = () => {
                     </div>
                   </div>
                   
-                  {/* Smaller Images - UPDATED */}
-                  <div className="relative rounded-xl overflow-hidden shadow-xl h-48 group">
+                  {/* Smaller Images */}
+                  <div className="relative rounded-xl overflow-hidden shadow-xl h-48 group cursor-pointer">
                     <img 
                       src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
                       alt="Marketing analytics dashboard with charts"
@@ -165,7 +213,7 @@ const Intro = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-purple-600/30 to-transparent"></div>
                   </div>
                   
-                  <div className="relative rounded-xl overflow-hidden shadow-xl h-48 group">
+                  <div className="relative rounded-xl overflow-hidden shadow-xl h-48 group cursor-pointer">
                     <img 
                       src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
                       alt="Creative team collaboration session"
@@ -217,8 +265,8 @@ const Intro = () => {
                 </div>
               </div>
 
-              {/* Team Photo - UPDATED */}
-              <div className="relative rounded-xl overflow-hidden shadow-lg mt-8 group">
+              {/* Team Photo */}
+              <div className="relative rounded-xl overflow-hidden shadow-lg mt-8 group cursor-pointer">
                 <img 
                   src="https://images.unsplash.com/photo-1551836026-d5c2c5af91f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
                   alt="Our professional marketing team working together"
@@ -230,16 +278,22 @@ const Intro = () => {
                 </div>
               </div>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - CLICKABLE */}
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <button className="group flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
+                <button 
+                  onClick={handleContactClick}
+                  className="group flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
                   <span>Contact Us</span>
                   <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
                 </button>
-                <button className="flex items-center justify-center gap-2 px-8 py-3 bg-cyan-500 text-white rounded-full font-semibold hover:bg-cyan-600 transition-all duration-300 hover:scale-105">
+                <a 
+                  href="tel:+917991647990"
+                  className="flex items-center justify-center gap-2 px-8 py-3 bg-cyan-500 text-white rounded-full font-semibold hover:bg-cyan-600 transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
                   <Phone size={18} />
                   <span>7991647990</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>

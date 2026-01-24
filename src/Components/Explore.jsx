@@ -1,12 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CheckCircle, Users, Trophy, Play } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Explore = () => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState({});
   const observerRefs = useRef([]);
 
   const handleNavigateToServices = () => {
-    window.location.href = '/services';
+    navigate('/services');
+    window.scrollTo(0, 0);
+  };
+
+  const handleNavigateToAbout = () => {
+    navigate('/about');
+    window.scrollTo(0, 0);
   };
 
   const stats = [
@@ -77,24 +85,24 @@ const Explore = () => {
       {/* Story Section */}
       <section className="bg-gradient-to-br from-white via-purple-50 to-blue-50 py-16 px-4 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          {/* Story Card - UPDATED: Play icon removed and mobile view fixed */}
+          {/* Story Card */}
           <div 
             ref={el => addToRefs(el, 0)}
             className={`relative rounded-3xl overflow-hidden h-64 md:h-80 mb-12 group shadow-xl border border-purple-200 transition-all duration-1000 ${
               isVisible[0] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
           >
-            {/* Background Image - UPDATED: Better mobile view */}
+            {/* Background Image */}
             <img 
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
               alt="Digital marketing team collaboration"
               className="absolute inset-0 w-full h-full object-cover md:object-center group-hover:scale-110 transition-transform duration-700"
             />
             
-            {/* Gradient Overlay - UPDATED: Better for text visibility */}
+            {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 via-slate-800/60 to-slate-950/70"></div>
             
-            {/* Content Overlay - UPDATED: Mobile responsive */}
+            {/* Content Overlay */}
             <div className="absolute inset-0 flex items-end p-4 md:p-8 lg:p-12">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full gap-4 md:gap-6">
                 <div className="max-w-2xl">
@@ -105,7 +113,10 @@ const Explore = () => {
                     Discover how we transformed businesses with innovative digital strategies
                   </p>
                 </div>
-                <button className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex-shrink-0 flex items-center gap-2 hover:scale-105 group text-sm sm:text-base">
+                <button 
+                  onClick={handleNavigateToAbout}
+                  className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex-shrink-0 flex items-center gap-2 hover:scale-105 group text-sm sm:text-base cursor-pointer"
+                >
                   <span>Learn More</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </button>
@@ -158,7 +169,7 @@ const Explore = () => {
             className="mb-16"
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-              {/* Left - Image - UPDATED: Mobile responsive */}
+              {/* Left - Image */}
               <div className={`relative rounded-2xl overflow-hidden h-64 sm:h-80 md:h-96 shadow-xl border border-purple-200 transition-all duration-1000 ${
                 isVisible[2] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
               }`}>
@@ -178,7 +189,7 @@ const Explore = () => {
                 </div>
               </div>
 
-              {/* Right - Content - UPDATED: Mobile responsive */}
+              {/* Right - Content */}
               <div className={`transition-all duration-1000 delay-300 ${
                 isVisible[2] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
               }`}>
@@ -190,7 +201,7 @@ const Explore = () => {
                   We are 120+ professional software engineers with more than 5 years of experience in delivering superior products. Believe in because you've seen it. Here are real numbers.
                 </p>
 
-                {/* Reasons Grid - UPDATED: Mobile responsive */}
+                {/* Reasons Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
                   {reasons.map((reason, idx) => (
                     <div 
@@ -210,8 +221,11 @@ const Explore = () => {
                   ))}
                 </div>
 
-                {/* CTA Button */}
-                <button className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group hover:scale-105 text-sm sm:text-base">
+                {/* CTA Button - CLICKABLE */}
+                <button 
+                  onClick={handleNavigateToAbout}
+                  className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group hover:scale-105 text-sm sm:text-base cursor-pointer"
+                >
                   <span>Learn More</span>
                   <span className="group-hover:translate-x-1 md:group-hover:translate-x-2 transition-transform">→</span>
                 </button>
@@ -219,16 +233,16 @@ const Explore = () => {
             </div>
           </div>
 
-          {/* Team Section - UPDATED: Mobile responsive */}
+          {/* Team Section */}
           <div 
             ref={el => addToRefs(el, 3)}
             className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
           >
-            {/* Left - Team Image Grid - UPDATED: Removed play icon */}
+            {/* Left - Team Image Grid */}
             <div className={`space-y-4 md:space-y-6 transition-all duration-1000 ${
               isVisible[3] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
             }`}>
-              {/* Main Team Image - UPDATED: Removed play icon */}
+              {/* Main Team Image */}
               <div className="relative rounded-2xl overflow-hidden h-56 sm:h-64 md:h-72 shadow-xl border border-purple-200 group">
                 <img 
                   src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
@@ -238,7 +252,7 @@ const Explore = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent"></div>
               </div>
 
-              {/* Team Stats Row - UPDATED: Mobile responsive */}
+              {/* Team Stats Row */}
               <div className="grid grid-cols-3 gap-3 md:gap-4">
                 {[
                   { img: 'photo-1454165804606-c3d57bc86b40', label: 'Strategy' },
@@ -265,7 +279,7 @@ const Explore = () => {
               </div>
             </div>
 
-            {/* Right - Content - UPDATED: Mobile responsive */}
+            {/* Right - Content */}
             <div className={`space-y-4 md:space-y-6 transition-all duration-1000 delay-300 ${
               isVisible[3] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
             }`}>
@@ -299,7 +313,7 @@ const Explore = () => {
               </ul>
               <button 
                 onClick={handleNavigateToServices}
-                className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105 text-sm sm:text-base cursor-pointer"
               >
                 Discover Our Story
               </button>

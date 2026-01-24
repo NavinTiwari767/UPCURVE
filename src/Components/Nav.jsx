@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Menu, X, Search, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../context/CartContext';
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const navigate = useNavigate();
+  const { getCartCount } = useContext(CartContext);
+  const cartCount = getCartCount();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -87,7 +90,7 @@ const Nav = () => {
 
             {/* Order Now Button - Desktop */}
             <button 
-              onClick={() => handleNavigation('/order')}
+              onClick={() => handleNavigation('/cart')}
               className="hidden md:block px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 text-sm hover:scale-105"
             >
               Order Now
@@ -95,16 +98,23 @@ const Nav = () => {
 
             {/* Sign Up Button - Desktop */}
             <button 
-              onClick={() => handleNavigation('/signup')}
+              onClick={() => handleNavigation('/admin')}
               className="hidden md:block px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 text-sm hover:scale-105"
             >
               Sign Up
             </button>
 
-            {/* Cart Icon */}
-            <button className="text-purple-600 hover:text-purple-700 transition relative">
+            {/* Cart Icon - CLICKABLE */}
+            <button 
+              onClick={() => handleNavigation('/cart')}
+              className="text-purple-600 hover:text-purple-700 transition relative hover:scale-110"
+            >
               <ShoppingCart size={24} />
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
+                  {cartCount}
+                </span>
+              )}
             </button>
 
             {/* Mobile Menu Button */}
@@ -149,6 +159,12 @@ const Nav = () => {
               className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer"
             >
               Contact
+            </button>
+            <button 
+              onClick={() => handleNavigation('/cart')}
+              className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition bg-none border-none cursor-pointer font-bold"
+            >
+              🛒 Cart ({cartCount})
             </button>
             <button 
               onClick={() => handleNavigation('/order')}
