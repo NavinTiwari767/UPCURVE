@@ -33,8 +33,21 @@ const Admin = () => {
 
   // 🔐 LOGOUT HANDLER
   const handleLogout = async () => {
-    await signOut();          // Supabase session clear
-    navigate("/login");      // Redirect to login
+    try {
+      // Clear admin session
+      localStorage.removeItem('admin_session');
+      localStorage.removeItem('customer_session');
+      
+      // Sign out from Supabase if authenticated via Supabase
+      await signOut();
+      
+      console.log('✅ Admin logged out successfully');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Navigate to auth page
+      navigate('/user-auth', { replace: true, state: { isAdmin: true } });
+    }
   };
 
   const fetchStats = async () => {

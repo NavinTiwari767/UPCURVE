@@ -6,7 +6,8 @@ import { CartContext } from '../../context/CartContext';
 
 const Services = () => {
   const navigate = useNavigate();
-  const { addToCart, cartItems } = useContext(CartContext);
+  const { addToCart, cartItems, user, loading: authLoading } = useContext(CartContext);
+  
   const [isVisible, setIsVisible] = useState({});
   const [counts, setCounts] = useState({
     projects: 0,
@@ -20,7 +21,8 @@ const Services = () => {
   const [servicesLoading, setServicesLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
-  const [addedItems, setAddedItems] = useState({}); // Track added items
+  const [addedItems, setAddedItems] = useState({});
+  
   const observerRefs = useRef([]);
   const hasAnimated = useRef(false);
 
@@ -101,6 +103,8 @@ const Services = () => {
   const fetchServices = async () => {
     try {
       setServicesLoading(true);
+      console.log('🔍 Fetching services from database...');
+      
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -108,18 +112,23 @@ const Services = () => {
 
       if (error) {
         console.error('❌ Error fetching services:', error.message);
+        console.error('❌ Full error:', error);
         setServices(fallbackServices);
         return;
       }
 
-      console.log('✅ Services fetched:', data);
+      console.log('✅ Services fetched successfully:', data);
       
       if (data && data.length > 0) {
+        // Ensure each service has proper ID and price
         const servicesWithPrice = data.map(service => ({
           ...service,
-          price: service.price || 5999
+          price: service.price || 5999,
+          id: service.id, // Make sure ID is included
+          color: service.color || 'from-purple-400 to-purple-600'
         }));
         setServices(servicesWithPrice);
+        console.log('📊 Processed services:', servicesWithPrice);
       } else {
         console.log('⚠️ No services in database, using fallback');
         setServices(fallbackServices);
@@ -137,8 +146,36 @@ const Services = () => {
     return cartItems.some(item => item.id === serviceId);
   };
 
-  // Handle service click - Add to cart
-  const handleServiceClick = (service) => {
+  // ✅ Handle service click
+  const handleServiceClick = async (service) => {
+    console.log('🛒 ========== handleServiceClick START ==========');
+    console.log('🔍 Service clicked:', service.title);
+    console.log('🆔 Service ID:', service.id);
+    console.log('👤 Current user:', user);
+    console.log('📧 User email:', user?.email);
+    console.log('🆔 User ID:', user?.id);
+    
+    // Check if user is logged in
+    if (!user) {
+      console.log('❌ User not logged in, redirecting to auth...');
+      
+      // Show notification
+      setNotificationMessage('⚠️ Please login to add items to cart');
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 2000);
+      
+      // Redirect to login with current location
+      setTimeout(() => {
+        navigate('/user-auth', { 
+          state: { from: '/services' }
+        });
+      }, 2000);
+      
+      console.log('🛒 ========== handleServiceClick END (Not logged in) ==========');
+      return;
+    }
+
+    // User is logged in, proceed with adding to cart
     const cartItem = {
       id: service.id,
       title: service.title,
@@ -148,7 +185,11 @@ const Services = () => {
       description: service.description
     };
 
-    addToCart(cartItem);
+    console.log('📦 Prepared cart item:', cartItem);
+    
+    // Call CartContext's addToCart function
+    console.log('📤 Calling addToCart...');
+    await addToCart(cartItem);
     
     // Mark this item as added
     setAddedItems(prev => ({ ...prev, [service.id]: true }));
@@ -158,19 +199,17 @@ const Services = () => {
     setShowNotification(true);
     setTimeout(() => {
       setShowNotification(false);
-      // Reset added state after animation
       setTimeout(() => {
         setAddedItems(prev => ({ ...prev, [service.id]: false }));
       }, 1000);
     }, 3000);
 
-    console.log('🛒 Added to cart:', cartItem);
-    console.log('📦 Current cart items:', cartItems);
+    console.log('🛒 ========== handleServiceClick END (Added to cart) ==========');
   };
 
   // Image loading handlers
   const handleImageError = (imgId) => {
-    console.log(`Photo load nahi hua: ${imgId}`);
+    console.log(`❌ Photo failed to load: ${imgId}`);
     setImageErrors(prev => ({ ...prev, [imgId]: true }));
   };
 
@@ -216,7 +255,6 @@ const Services = () => {
             if (entry.isIntersecting) {
               setIsVisible(prev => ({ ...prev, [index]: true }));
               
-              // Counter animation trigger
               if (index === 5 && !hasAnimated.current) {
                 hasAnimated.current = true;
                 animateCounter('projects', 22594);
@@ -261,14 +299,46 @@ const Services = () => {
     }
   };
 
+  // ✅ Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <Loader className="w-12 h-12 text-purple-600 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full bg-gradient-to-br from-white via-purple-50 to-blue-50">
       {/* Notification Toast */}
       {showNotification && (
-        <div className="fixed top-6 right-6 z-50 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg animate-pulse">
+        <div className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-lg shadow-lg animate-pulse ${
+          notificationMessage.includes('⚠️') 
+            ? 'bg-orange-500 text-white' 
+            : 'bg-green-500 text-white'
+        }`}>
           {notificationMessage}
         </div>
       )}
+
+      {/* User Status Bar */}
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-2 px-4 text-center text-sm">
+        {user ? (
+          <div className="flex items-center justify-center gap-2">
+            <span>👋 Welcome, {user.name || user.email}!</span>
+            <span className="text-xs opacity-75">(ID: {user.id?.substring(0, 8)}...)</span>
+          </div>
+        ) : (
+          <span>
+            🔓 <button 
+              onClick={() => navigate('/user-auth')}
+              className="underline hover:text-purple-200"
+            >
+              Login
+            </button> to add items to cart
+          </span>
+        )}
+      </div>
 
       {/* Hero Section */}
       <section className="relative h-[400px] overflow-hidden">
@@ -303,34 +373,18 @@ const Services = () => {
       </section>
 
       {/* Portfolio Grid */}
-      <section className="py-20 px-4">
+      <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <div 
-            ref={el => addToRefs(el, 0)}
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-1000 ${
-              isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-            }`}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {portfolioImages.map((item, idx) => (
               <div 
                 key={idx}
-                className={`relative rounded-2xl overflow-hidden shadow-xl border border-purple-200 group h-64 transition-all duration-700 ${
-                  isVisible[0] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                }`}
-                style={{ transitionDelay: isVisible[0] ? `${idx * 100}ms` : '0ms' }}
+                className="relative rounded-2xl overflow-hidden shadow-xl border border-purple-200 group h-64 transition-all duration-700 hover:shadow-2xl"
               >
-                {!imageLoading[item.img] && !imageErrors[item.img] && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
-                    <Loader className="w-8 h-8 text-purple-500 animate-spin" />
-                  </div>
-                )}
-
                 <img 
                   src={getImageUrl(item)}
                   alt={item.type}
-                  className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${
-                    imageLoading[item.img] ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   onError={() => handleImageError(item.img)}
                   onLoad={() => handleImageLoad(item.img)}
                   loading="lazy"
@@ -347,14 +401,9 @@ const Services = () => {
       </section>
 
       {/* Full Creative Services Section */}
-      <section className="py-20 px-4 bg-white">
+      <section className="py-12 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div 
-            ref={el => addToRefs(el, 1)}
-            className={`text-center mb-16 transition-all duration-1000 ${
-              isVisible[1] ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
-            }`}
-          >
+          <div className="text-center mb-12">
             <p className="text-sm font-semibold text-purple-600 tracking-widest mb-4">⚡ WELCOME AXIM</p>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900">
               Full Creative Services<br />For You
@@ -362,7 +411,7 @@ const Services = () => {
             <p className="text-slate-600 mt-4">Showing {services.length} services</p>
           </div>
 
-          {/* Services List - Database se data */}
+          {/* Services List */}
           {servicesLoading ? (
             <div className="flex justify-center items-center py-20">
               <Loader className="w-12 h-12 text-purple-600 animate-spin" />
@@ -399,7 +448,7 @@ const Services = () => {
                           <p className="text-2xl font-bold text-green-600">₹{service.price || 5999}</p>
                         </div>
 
-                        {/* Clickable Section - ADD TO CART */}
+                        {/* Add to Cart Button */}
                         <div className="md:col-span-5 flex flex-col items-center justify-center gap-4">
                           <button
                             onClick={() => handleServiceClick(service)}
@@ -408,11 +457,11 @@ const Services = () => {
                                 ? 'bg-gradient-to-br from-green-500 to-green-600 animate-pulse'
                                 : 'bg-gradient-to-br from-purple-400 to-purple-500'
                             }`}
-                            title={isItemInCart ? "Already in Cart" : "Add to Cart"}
+                            title={isItemInCart ? "Already in Cart" : user ? "Add to Cart" : "Login to Add"}
+                            disabled={!user && isItemInCart}
                           >
                             <ShoppingCart size={28} className="text-white" />
                             
-                            {/* Added to cart tick mark */}
                             {isItemInCart && (
                               <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-green-500 flex items-center justify-center">
                                 <span className="text-green-600 text-xs font-bold">✓</span>
@@ -451,13 +500,8 @@ const Services = () => {
             </div>
           )}
 
-          {/* See Services Button */}
-          <div 
-            ref={el => addToRefs(el, 5)}
-            className={`text-center mt-12 transition-all duration-1000 ${
-              isVisible[5] ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-            }`}
-          >
+          {/* View Cart Button */}
+          <div className="text-center mt-8">
             <button 
               onClick={() => navigate('/cart')}
               className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-green-500/30 transition-all duration-300 flex items-center gap-2 mx-auto group hover:scale-105"
@@ -470,7 +514,7 @@ const Services = () => {
       </section>
 
       {/* Partners Logo Section */}
-      <section className="py-12 px-4 bg-gradient-to-r from-purple-50 to-blue-50">
+      <section className="py-8 px-4 bg-gradient-to-r from-purple-50 to-blue-50">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap justify-center items-center gap-12">
             {partners.map((partner, idx) => (
@@ -486,16 +530,10 @@ const Services = () => {
       </section>
 
       {/* We Provide Better Service Section */}
-      <section className="py-20 px-4 bg-white">
+      <section className="py-12 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side */}
-            <div 
-              ref={el => addToRefs(el, 6)}
-              className={`transition-all duration-1000 ${
-                isVisible[6] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
-              }`}
-            >
+            <div>
               <p className="text-sm font-semibold text-purple-600 tracking-widest mb-4">⚡ OUR BEST SERVICES</p>
               <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
                 We Provide<br />Better Service?
@@ -536,13 +574,7 @@ const Services = () => {
               </button>
             </div>
 
-            {/* Right Side - Technologies */}
-            <div 
-              ref={el => addToRefs(el, 7)}
-              className={`transition-all duration-1000 delay-300 ${
-                isVisible[7] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
-              }`}
-            >
+            <div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {technologies.map((tech, idx) => (
                   <div 
@@ -561,7 +593,7 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Custom CSS for animations */}
+      {/* Custom CSS */}
       <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
