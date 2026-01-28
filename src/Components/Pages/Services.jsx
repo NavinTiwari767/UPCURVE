@@ -26,6 +26,14 @@ const Services = () => {
   const observerRefs = useRef([]);
   const hasAnimated = useRef(false);
 
+  // ✅ Common scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   // Portfolio images with backup URLs
   const portfolioImages = [
     { 
@@ -146,7 +154,7 @@ const Services = () => {
     return cartItems.some(item => item.id === serviceId);
   };
 
-  // ✅ Handle service click
+  // ✅ Handle service click with scroll to top
   const handleServiceClick = async (service) => {
     console.log('🛒 ========== handleServiceClick START ==========');
     console.log('🔍 Service clicked:', service.title);
@@ -163,6 +171,7 @@ const Services = () => {
       
       // Redirect to login with current location
       setTimeout(() => {
+        scrollToTop(); // Scroll to top before navigation
         navigate('/user-auth', { 
           state: { from: '/services' }
         });
@@ -223,13 +232,27 @@ const Services = () => {
   };
 
   const handleGetStarted = () => {
-    window.scrollTo(0, 0);
+    scrollToTop(); // Scroll to top
     navigate('/contact');
+  };
+
+  const handleViewCart = () => {
+    scrollToTop(); // Scroll to top
+    navigate('/cart');
+  };
+
+  const handleHomeClick = () => {
+    scrollToTop(); // Scroll to top
+    navigate('/');
   };
 
   // Fetch services on component mount
   useEffect(() => {
     fetchServices();
+    // Scroll to top when component mounts
+    setTimeout(() => {
+      scrollToTop();
+    }, 100);
   }, []);
 
   // Load added items state from cart
@@ -331,16 +354,13 @@ const Services = () => {
         </div>
         
         {/* Content container with more padding */}
-        <div className="relative h-full flex flex-col items-center justify-center text-center px-4 pt-16"> {/* Added pt-16 */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in"> {/* Larger text */}
+        <div className="relative h-full flex flex-col items-center justify-center text-center px-4 pt-16">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
             Services
           </h1>
-          <div className="flex items-center gap-2 text-white text-lg animate-slide-up"> {/* Larger text */}
+          <div className="flex items-center gap-2 text-white text-lg animate-slide-up">
             <span 
-              onClick={() => {
-                window.scrollTo(0, 0);
-                navigate('/');
-              }}
+              onClick={handleHomeClick}
               className="hover:text-purple-400 transition-colors cursor-pointer"
             >
               Home
@@ -487,7 +507,7 @@ const Services = () => {
           {/* View Cart Button */}
           <div className="text-center mt-8">
             <button 
-              onClick={() => navigate('/cart')}
+              onClick={handleViewCart}
               className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-green-500/30 transition-all duration-300 flex items-center gap-2 mx-auto group hover:scale-105"
             >
               <ShoppingCart size={20} />

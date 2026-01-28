@@ -12,8 +12,20 @@ export default function Blog() {
   // 🔥 IMPORTANT: Add this line (must match your AdminBlog component)
   const BUCKET_NAME = "blog-images"; // 👈 ADD THIS LINE
 
+  // ✅ Common scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   useEffect(() => {
     fetchPosts();
+    // Scroll to top when component mounts
+    setTimeout(() => {
+      scrollToTop();
+    }, 100);
   }, []);
 
   useEffect(() => {
@@ -91,6 +103,20 @@ export default function Blog() {
     }
   };
 
+  const handleBackToBlogs = () => {
+    scrollToTop(); // Scroll to top first
+    setTimeout(() => {
+      setSelectedPost(null); // Then clear selected post
+    }, 300);
+  };
+
+  const handlePostClick = (post) => {
+    scrollToTop(); // Scroll to top first
+    setTimeout(() => {
+      setSelectedPost(post); // Then set selected post
+    }, 300);
+  };
+
   // 🔹 Single blog view
   if (selectedPost) {
     // 🔥 UPDATE THIS: Ensure selectedPost has image_url
@@ -103,7 +129,7 @@ export default function Blog() {
       <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-blue-50">
         <div className="max-w-4xl mx-auto pt-32 pb-20 px-6">
           <button
-            onClick={() => setSelectedPost(null)}
+            onClick={handleBackToBlogs}
             className="group flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-8 font-semibold transition-all duration-300"
           >
             <span className="group-hover:-translate-x-1 transition-transform">←</span>
@@ -178,7 +204,7 @@ export default function Blog() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-blue-50">
       {/* Hero Section */}
-      <section className="relative h-[400px] overflow-hidden">
+      <section className="relative h-[500px] md:h-[550px] overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
@@ -188,8 +214,8 @@ export default function Blog() {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 to-slate-900/50"></div>
         </div>
         
-        <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 animate-fade-in">
+        <div className="relative h-full flex flex-col items-center justify-center text-center px-4 pt-16">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
             Our Blog
           </h1>
           <p className="text-xl text-gray-200 animate-slide-up">
@@ -236,7 +262,7 @@ export default function Blog() {
                   isVisible[idx + 1] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
                 }`}
                 style={{ transitionDelay: isVisible[idx + 1] ? `${idx * 100}ms` : '0ms' }}
-                onClick={() => setSelectedPost(post)}
+                onClick={() => handlePostClick(post)}
               >
                 {/* Image */}
                 <div className="relative h-56 overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">

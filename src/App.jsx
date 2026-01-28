@@ -28,7 +28,8 @@ import Contact from "./Components/Contact"; // Public contact page
 import Admin from "./Components/Admin/Admin";
 import AdminBlog from "./Components/Admin/AdminBlog";
 import AdminServices from "./Components/Admin/AdminServices";
-import AdminContacts from "./Components/Admin/AdminContacts";
+import AdminContacts from "./Components/Admin/Admincontacts";
+import AdminContactInfo from "./Components/Admin/AdminContactInfo";
 
 // Auth
 import UserAuth from "./Components/Auth/UserAuth"; // Customer only
@@ -69,6 +70,7 @@ function Layout() {
         <Route path="/ecommerce" element={<Ecommerce />} />
         <Route path="/logo" element={<Logo />} />
         <Route path="/policy" element={<Policy />} />
+
 
         {/* 🔐 AUTH ROUTES */}
         <Route path="/user-auth" element={<UserAuth />} /> {/* Customer */}
@@ -127,6 +129,14 @@ function Layout() {
           element={
             <AdminProtectedRoute>
               <AdminContacts />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/contact-info"
+          element={
+            <AdminProtectedRoute>
+              <AdminContactInfo />
             </AdminProtectedRoute>
           }
         />

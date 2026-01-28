@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Send, Phone, Mail, MapPin, CheckCircle } from 'lucide-react';
-// import { supabase } from '../../services/supabase';
+import React, { useState, useEffect } from 'react';
+import { Send, Phone, Mail, MapPin, CheckCircle, Loader } from 'lucide-react';
 import { supabase } from '../services/supabase';
 
 const Contact = () => {
@@ -15,6 +14,56 @@ const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  // New state for dynamic contact info
+  const [contactInfo, setContactInfo] = useState({
+    phone: { value: '+91 79916 47990', description: 'Call us anytime, we\'re always ready to help' },
+    email: { value: 'info@upcurvemedia.com', description: 'Drop us an email and we\'ll respond quickly' },
+    location: { value: 'Kolkata, West Bengal, India', description: 'Visit our office for a personal touch' }
+  });
+  const [loadingContactInfo, setLoadingContactInfo] = useState(true);
+
+  // Fetch contact info from Supabase
+  useEffect(() => {
+    fetchContactInfo();
+  }, []);
+
+  const fetchContactInfo = async () => {
+    try {
+      setLoadingContactInfo(true);
+      const { data, error } = await supabase
+        .from('contact_info')
+        .select('*')
+        .order('type', { ascending: true });
+
+      if (error) throw error;
+
+      // Organize data by type
+      const info = {};
+      if (data && data.length > 0) {
+        data.forEach(item => {
+          info[item.type] = {
+            value: item.value,
+            description: item.description
+          };
+        });
+        
+        // Update state only if we have data
+        if (Object.keys(info).length > 0) {
+          setContactInfo(prev => ({
+            ...prev,
+            ...info
+          }));
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Error fetching contact info:', error);
+      // Keep default values if fetch fails
+    } finally {
+      setLoadingContactInfo(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -137,58 +186,97 @@ const Contact = () => {
             <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-purple-600 mx-auto"></div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
-            {/* Contact Information Cards */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-purple-200 hover:shadow-xl transition">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-center">
-                  <Phone size={24} className="text-white" />
+          {/* Contact Information Cards - Dynamic */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+            {/* Phone Card */}
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-purple-200 hover:shadow-xl transition">
+              {loadingContactInfo ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader size={24} className="animate-spin text-purple-600" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Phone</h3>
-              </div>
-              <p className="text-slate-700">
-                <a href="tel:+917991647990" className="hover:text-purple-600 transition">
-                  +91 79916 47990
-                </a>
-              </p>
-              <p className="text-slate-600 text-sm mt-2">Call us anytime, we're always ready to help</p>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-center">
+                      <Phone size={24} className="text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">Phone</h3>
+                  </div>
+                  <p className="text-slate-700 font-medium">
+                    <a 
+                      href={`tel:${contactInfo.phone.value}`} 
+                      className="hover:text-purple-600 transition"
+                    >
+                      {contactInfo.phone.value}
+                    </a>
+                  </p>
+                  <p className="text-slate-600 text-sm mt-2">
+                    {contactInfo.phone.description}
+                  </p>
+                </>
+              )}
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-purple-200 hover:shadow-xl transition">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 flex items-center justify-center">
-                  <Mail size={24} className="text-white" />
+            {/* Email Card */}
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-purple-200 hover:shadow-xl transition">
+              {loadingContactInfo ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader size={24} className="animate-spin text-cyan-600" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Email</h3>
-              </div>
-              <p className="text-slate-700">
-                <a href="mailto:info@upcurvemedia.com" className="hover:text-purple-600 transition">
-                  info@upcurvemedia.com
-                </a>
-              </p>
-              <p className="text-slate-600 text-sm mt-2">Drop us an email and we'll respond quickly</p>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 flex items-center justify-center">
+                      <Mail size={24} className="text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">Email</h3>
+                  </div>
+                  <p className="text-slate-700 font-medium">
+                    <a 
+                      href={`mailto:${contactInfo.email.value}`} 
+                      className="hover:text-purple-600 transition"
+                    >
+                      {contactInfo.email.value}
+                    </a>
+                  </p>
+                  <p className="text-slate-600 text-sm mt-2">
+                    {contactInfo.email.description}
+                  </p>
+                </>
+              )}
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-purple-200 hover:shadow-xl transition">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 flex items-center justify-center">
-                  <MapPin size={24} className="text-white" />
+            {/* Location Card */}
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-purple-200 hover:shadow-xl transition">
+              {loadingContactInfo ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader size={24} className="animate-spin text-pink-600" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Location</h3>
-              </div>
-              <p className="text-slate-700">
-                Kolkata, West Bengal, India
-              </p>
-              <p className="text-slate-600 text-sm mt-2">Visit our office for a personal touch</p>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 flex items-center justify-center">
+                      <MapPin size={24} className="text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">Location</h3>
+                  </div>
+                  <p className="text-slate-700 font-medium">
+                    {contactInfo.location.value}
+                  </p>
+                  <p className="text-slate-600 text-sm mt-2">
+                    {contactInfo.location.description}
+                  </p>
+                </>
+              )}
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-purple-200">
-            <h3 className="text-3xl font-bold text-slate-900 mb-8">Contact Me</h3>
+          <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 lg:p-12 border border-purple-200">
+            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">Contact Me</h3>
 
             {submitted && (
-              <div className="mb-8 p-6 bg-green-50 border border-green-300 rounded-xl flex items-center gap-3">
+              <div className="mb-6 md:mb-8 p-4 md:p-6 bg-green-50 border border-green-300 rounded-xl flex items-center gap-3">
                 <CheckCircle className="text-green-600" size={24} />
                 <p className="text-green-700 font-semibold">
                   Thank you! Your message has been sent successfully. We'll get back to you soon.
@@ -197,18 +285,18 @@ const Contact = () => {
             )}
 
             {error && (
-              <div className="mb-8 p-6 bg-red-50 border border-red-300 rounded-xl">
+              <div className="mb-6 md:mb-8 p-4 md:p-6 bg-red-50 border border-red-300 rounded-xl">
                 <p className="text-red-700 font-semibold">
                   ⚠️ {error}
                 </p>
               </div>
             )}
 
-            <div className="space-y-8">
+            <div className="space-y-6 md:space-y-8">
               {/* First Row - First Name and Message */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
+                  <label className="block text-sm font-semibold text-slate-900 mb-2 md:mb-3 uppercase">
                     First Name *
                   </label>
                   <input
@@ -218,12 +306,12 @@ const Contact = () => {
                     onChange={handleChange}
                     placeholder="First Name"
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
+                    className="w-full px-4 md:px-6 py-3 md:py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
+                  <label className="block text-sm font-semibold text-slate-900 mb-2 md:mb-3 uppercase">
                     Message *
                   </label>
                   <textarea
@@ -232,16 +320,16 @@ const Contact = () => {
                     onChange={handleChange}
                     placeholder="Type Your Message"
                     required
-                    rows="4"
-                    className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition resize-none"
+                    rows="3"
+                    className="w-full px-4 md:px-6 py-3 md:py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition resize-none"
                   />
                 </div>
               </div>
 
               {/* Second Row - Phone and Email */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
+                  <label className="block text-sm font-semibold text-slate-900 mb-2 md:mb-3 uppercase">
                     Phone Number *
                   </label>
                   <input
@@ -251,12 +339,12 @@ const Contact = () => {
                     onChange={handleChange}
                     placeholder="Phone Number"
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
+                    className="w-full px-4 md:px-6 py-3 md:py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
+                  <label className="block text-sm font-semibold text-slate-900 mb-2 md:mb-3 uppercase">
                     Email Address *
                   </label>
                   <input
@@ -266,21 +354,21 @@ const Contact = () => {
                     onChange={handleChange}
                     placeholder="Email Address"
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
+                    className="w-full px-4 md:px-6 py-3 md:py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
                   />
                 </div>
               </div>
 
               {/* Third Row - Service Type */}
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
+                <label className="block text-sm font-semibold text-slate-900 mb-2 md:mb-3 uppercase">
                   Select Service Type *
                 </label>
                 <select
                   name="serviceType"
                   value={formData.serviceType}
                   onChange={handleChange}
-                  className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition appearance-none cursor-pointer"
+                  className="w-full px-4 md:px-6 py-3 md:py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition appearance-none cursor-pointer"
                   style={{
                     backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239333ea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
                     backgroundRepeat: 'no-repeat',
@@ -298,20 +386,29 @@ const Contact = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex items-center gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4">
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className={`px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group ${
+                  className={`px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center justify-center gap-2 group ${
                     loading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
-                  <span>{loading ? 'Sending...' : 'Send Message'}</span>
-                  {!loading && (
-                    <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+                  {loading ? (
+                    <>
+                      <Loader size={18} className="animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <span>Send Message</span>
+                      <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </>
                   )}
                 </button>
-                <p className="text-slate-600 text-sm">We'll get back to you within 24 hours</p>
+                <p className="text-slate-600 text-sm">
+                  We'll get back to you within 24 hours
+                </p>
               </div>
             </div>
           </div>
