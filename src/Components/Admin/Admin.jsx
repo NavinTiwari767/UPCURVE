@@ -36,7 +36,6 @@ const Admin = () => {
 
   useEffect(() => {
     fetchStats();
-    fetchRecentPosts();
   }, []);
 
   const handleLogout = async () => {
@@ -67,18 +66,6 @@ const Admin = () => {
         totalPosts: posts?.length || 0,
         totalServices: services?.length || 0,
       }));
-    }
-  };
-
-  const fetchRecentPosts = async () => {
-    const { data, error } = await supabase
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(5);
-
-    if (!error) {
-      setRecentPosts(data || []);
     }
   };
 
@@ -284,73 +271,7 @@ const Admin = () => {
               </div>
             </div>
 
-            {/* RECENT POSTS */}
-            <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-lg border border-slate-100">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Recent Blog Posts
-                </h2>
-                <button
-                  onClick={() => handleNavigate("/admin/blog")}
-                  className="text-purple-600 font-semibold hover:text-purple-700 flex items-center gap-1"
-                >
-                  View All <ChevronRight size={16} />
-                </button>
-              </div>
-
-              {recentPosts.length === 0 ? (
-                <div className="text-center py-12">
-                  <FileText
-                    size={48}
-                    className="text-slate-300 mx-auto mb-4"
-                  />
-                  <p className="text-slate-600 mb-4">No posts yet</p>
-                  <button
-                    onClick={() => handleNavigate("/admin/blog")}
-                    className="px-6 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
-                  >
-                    Create Your First Post
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {recentPosts.map((post) => (
-                    <div
-                      key={post.id}
-                      className="flex items-center justify-between p-4 hover:bg-purple-50 rounded-xl transition-all border border-transparent hover:border-purple-200 cursor-pointer group"
-                      onClick={() =>
-                        handleNavigate(`/admin/blog/edit/${post.id}`)
-                      }
-                    >
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition">
-                          <FileText size={20} className="text-purple-600" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-slate-900 group-hover:text-purple-600 transition">
-                            {post.title}
-                          </h3>
-                          <p className="text-sm text-slate-500 flex items-center gap-2 mt-1">
-                            <Clock size={14} />
-                            {new Date(post.created_at).toLocaleDateString(
-                              "en-US",
-                              {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              }
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                      <button className="p-2 text-purple-600 hover:bg-purple-100 rounded-lg transition">
-                        <Edit3 size={18} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* ✅ RECENT BLOG POSTS SECTION REMOVED */}
           </div>
         </main>
 
