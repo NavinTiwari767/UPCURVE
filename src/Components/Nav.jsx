@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Menu, X, Search, ShoppingCart, User, LogOut } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import upCurveLogo from '../assets/upCurve.jpeg'; // ✅ Image ko import karo
 
 const Nav = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   
   const { getCartCount, user: contextUser } = useContext(CartContext);
@@ -50,13 +50,13 @@ const Nav = () => {
     <nav className="sticky top-0 z-50 bg-gradient-to-r from-white via-blue-50 to-white shadow-lg border-b border-purple-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
+          {/* Logo - ✅ Ab imported image use kar rahe hain */}
           <div 
             className="flex items-center gap-3 cursor-pointer hover:opacity-85 transition flex-shrink-0"
             onClick={() => handleNavigation('/')}
           >
             <img 
-              src="/src/assets/upCurve.jpeg" 
+              src={upCurveLogo}
               alt="UpCurve Logo"
               className="h-16 w-auto object-contain"
             />
@@ -78,18 +78,6 @@ const Nav = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
-            {/* Search - Desktop */}
-            <div className="hidden lg:flex items-center bg-slate-100 rounded-full px-4 py-2 border border-purple-200">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="bg-transparent text-slate-700 placeholder-slate-400 outline-none w-32"
-              />
-              <Search size={18} className="text-purple-600" />
-            </div>
-
             {/* Cart Icon */}
             <button 
               onClick={() => handleNavigation('/cart')}
@@ -204,20 +192,6 @@ const Nav = () => {
                 </p>
               </div>
             )}
-
-            {/* Mobile Search */}
-            <div className="px-4">
-              <div className="flex items-center bg-slate-100 rounded-full px-4 py-2 border border-purple-200">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className="bg-transparent text-slate-700 placeholder-slate-400 outline-none flex-1"
-                />
-                <Search size={18} className="text-purple-600" />
-              </div>
-            </div>
 
             {/* Mobile Navigation Links */}
             {['Home', 'About', 'Services', 'Blog', 'Contact', 'Cart'].map((item) => (
