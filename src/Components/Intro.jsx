@@ -265,18 +265,18 @@ const Intro = () => {
                 </div>
               </div>
 
-              {/* Team Photo */}
-              <div className="relative rounded-xl overflow-hidden shadow-lg mt-8 group cursor-pointer">
-                <img 
-                  src="https://images.unsplash.com/photo-1551836026-d5c2c5af91f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                  alt="Our professional marketing team working together"
-                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/80 to-transparent p-4">
-                  <p className="text-white text-sm font-semibold">Our Expert Team</p>
-                  <p className="text-gray-200 text-xs">120+ professionals working for your success</p>
-                </div>
-              </div>
+           {/* Team Photo */}
+<div className="relative rounded-xl overflow-hidden shadow-lg mt-8 group cursor-pointer">
+  <img 
+    src="https://images.unsplash.com/photo-1556761175-b413da4baf72" 
+    alt="Our professional marketing team working together"
+    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+  />
+  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/80 to-transparent p-4">
+    <p className="text-white text-sm font-semibold">Our Expert Team</p>
+    <p className="text-gray-200 text-xs">120+ professionals working for your success</p>
+  </div>
+</div>
 
               {/* CTA Buttons - CLICKABLE */}
               <div className="flex flex-col sm:flex-row gap-4 pt-6">

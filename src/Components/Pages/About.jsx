@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CheckCircle, Users, Trophy, Target, Award, Zap } from 'lucide-react';
+import { CheckCircle, Users, Trophy, Target, Award, Zap, IndianRupee } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const About = () => {
@@ -11,7 +11,7 @@ const About = () => {
     {
       icon: Trophy,
       number: '120+',
-      label: 'Projects Done',
+      label: 'Projects Completed',
       color: 'from-purple-400 to-purple-600'
     },
     {
@@ -107,17 +107,17 @@ const About = () => {
       <section className="relative h-[400px] overflow-hidden">
         <div className="absolute inset-0">
           <img 
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+            src="https://images.unsplash.com/photo-1521737711867-e3b97375f902"
             alt="Team collaboration"
             className="w-full h-full object-cover"
-            style={{ objectPosition: 'center 30%' }} // Adjust vertical position
+            style={{ objectPosition: 'center 30%' }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 to-slate-900/50"></div>
         </div>
         
         <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 animate-fade-in">
-            About
+            About Us
           </h1>
           <div className="flex items-center gap-2 text-white animate-slide-up">
             <span 
@@ -160,10 +160,10 @@ const About = () => {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-xl border border-purple-200 group">
                 <img 
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
                   alt="Team working together"
                   className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-700"
-                  style={{ objectPosition: 'center 25%' }} // Adjust vertical position
+                  style={{ objectPosition: 'center 25%' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent"></div>
               </div>
@@ -178,12 +178,15 @@ const About = () => {
             >
               <div className="bg-white rounded-2xl p-8 shadow-lg border border-purple-200">
                 <div className="flex items-center gap-6 mb-6">
-                  <div className="text-5xl font-bold text-purple-600">$468</div>
+                  <div className="flex items-center gap-2">
+                    <IndianRupee className="text-purple-600" size={32} />
+                    <div className="text-5xl font-bold text-purple-600">38,844</div>
+                  </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-green-500">↗ 26%</span>
                   </div>
                 </div>
-                <p className="text-slate-600 text-sm mb-4">You informed of this week</p>
+                <p className="text-slate-600 text-sm mb-4">Your earnings this week</p>
                 <p className="text-slate-500 text-xs">compared to last week</p>
               </div>
 
@@ -210,7 +213,7 @@ const About = () => {
                 isVisible[3] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
               }`}
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Goals</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Goals</h2>
               <p className="text-gray-300 text-lg leading-relaxed">
                 Our goal is to deliver exceptional digital marketing solutions that drive measurable results for our clients. We combine creativity with data-driven strategies to help businesses grow and succeed in the digital landscape.
               </p>
@@ -225,10 +228,10 @@ const About = () => {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
                 <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e"
                   alt="Professional portrait"
                   className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-700"
-                  style={{ objectPosition: 'center 20%' }} // Adjust vertical position
+                  style={{ objectPosition: 'center 20%' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 to-transparent"></div>
               </div>
@@ -271,10 +274,10 @@ const About = () => {
                     <div className="relative mb-6">
                       <div className="w-20 h-20 mx-auto rounded-full overflow-hidden border-4 border-purple-500">
                         <img 
-                          src={`https://images.unsplash.com/photo-${idx === 0 ? '1573497019940-1c28c88b4f3e' : idx === 1 ? '1519085360753-af0119f7c' : '1573164713714-d95e436ab8d6'}?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80`}
+                          src={`https://images.unsplash.com/photo-${idx === 0 ? '1556761175-b413da4baf72' : idx === 1 ? '1573497019940-1c28c88b4f3e' : '1522071820081-009f0129c71c'}`}
                           alt={service.title}
                           className="w-full h-full object-cover"
-                          style={{ objectPosition: 'center 30%' }} // Adjust vertical position
+                          style={{ objectPosition: 'center 30%' }}
                         />
                       </div>
                       <div className={`absolute -top-2 -right-2 w-10 h-10 rounded-full bg-gradient-to-br ${service.color} flex items-center justify-center text-white`}>
@@ -301,10 +304,10 @@ const About = () => {
             }`}
           >
             <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902"
               alt="Team collaboration"
               className="w-full h-full object-cover"
-              style={{ objectPosition: 'center 35%' }} // Adjust vertical position
+              style={{ objectPosition: 'center 35%' }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-purple-900/60 to-slate-900/60"></div>
             
@@ -335,10 +338,10 @@ const About = () => {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e"
                   alt="Professional"
                   className="w-full h-[500px] object-cover"
-                  style={{ objectPosition: 'center 25%' }} // Adjust vertical position
+                  style={{ objectPosition: 'center 25%' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
               </div>
@@ -381,10 +384,10 @@ const About = () => {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
                   <img 
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                    src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e"
                     alt="Logon D"
                     className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center 25%' }} // Adjust vertical position
+                    style={{ objectPosition: 'center 25%' }}
                   />
                 </div>
                 <div>

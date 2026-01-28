@@ -92,11 +92,15 @@ const Explore = () => {
               isVisible[0] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
           >
-            {/* Background Image */}
+            {/* ✅ FIXED: Background Image */}
             <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902" 
               alt="Digital marketing team collaboration"
               className="absolute inset-0 w-full h-full object-cover md:object-center group-hover:scale-110 transition-transform duration-700"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg';
+              }}
             />
             
             {/* Gradient Overlay */}
@@ -173,10 +177,15 @@ const Explore = () => {
               <div className={`relative rounded-2xl overflow-hidden h-64 sm:h-80 md:h-96 shadow-xl border border-purple-200 transition-all duration-1000 ${
                 isVisible[2] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'
               }`}>
+                {/* ✅ FIXED: Marketing analytics image */}
                 <img 
-                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71" 
                   alt="Digital marketing analytics dashboard"
                   className="w-full h-full object-cover object-center hover:scale-110 transition-transform duration-700"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.pexels.com/photos/669619/pexels-photo-669619.jpeg';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent"></div>
                 
@@ -244,38 +253,83 @@ const Explore = () => {
             }`}>
               {/* Main Team Image */}
               <div className="relative rounded-2xl overflow-hidden h-56 sm:h-64 md:h-72 shadow-xl border border-purple-200 group">
+                {/* ✅ FIXED: Team collaboration image */}
                 <img 
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                  src="https://images.unsplash.com/photo-1556761175-b413da4baf72" 
                   alt="Team collaboration meeting"
                   className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent"></div>
               </div>
 
-              {/* Team Stats Row */}
+              {/* Team Stats Row - Fixed images for Strategy, Marketing, Design */}
               <div className="grid grid-cols-3 gap-3 md:gap-4">
-                {[
-                  { img: 'photo-1454165804606-c3d57bc86b40', label: 'Strategy' },
-                  { img: 'photo-1432888622747-4eb9a8f2c293', label: 'Marketing' },
-                  { img: 'photo-1581291518633-83b4ebd1d83e', label: 'Design' }
-                ].map((item, idx) => (
-                  <div 
-                    key={idx}
-                    className={`relative rounded-xl overflow-hidden h-28 sm:h-32 md:h-36 shadow-lg border border-purple-100 group transition-all duration-700 ${
-                      isVisible[3] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                    }`}
-                    style={{ transitionDelay: isVisible[3] ? `${300 + idx * 100}ms` : '0ms' }}
-                  >
-                    <img 
-                      src={`https://images.unsplash.com/${item.img}?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`}
-                      alt={item.label}
-                      className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute bottom-2 left-2 right-2 bg-slate-900/60 backdrop-blur-sm rounded-lg p-2">
-                      <p className="text-white text-xs font-semibold">{item.label}</p>
-                    </div>
+                {/* ✅ FIXED: Strategy Image */}
+                <div 
+                  className={`relative rounded-xl overflow-hidden h-28 sm:h-32 md:h-36 shadow-lg border border-purple-100 group transition-all duration-700 ${
+                    isVisible[3] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  }`}
+                  style={{ transitionDelay: isVisible[3] ? '300ms' : '0ms' }}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1552664730-d307ca884978"
+                    alt="Strategy"
+                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg';
+                    }}
+                  />
+                  <div className="absolute bottom-2 left-2 right-2 bg-slate-900/60 backdrop-blur-sm rounded-lg p-2">
+                    <p className="text-white text-xs font-semibold">Strategy</p>
                   </div>
-                ))}
+                </div>
+
+                {/* ✅ FIXED: Marketing Image */}
+                <div 
+                  className={`relative rounded-xl overflow-hidden h-28 sm:h-32 md:h-36 shadow-lg border border-purple-100 group transition-all duration-700 ${
+                    isVisible[3] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  }`}
+                  style={{ transitionDelay: isVisible[3] ? '400ms' : '0ms' }}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f"
+                    alt="Marketing"
+                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.pexels.com/photos/669619/pexels-photo-669619.jpeg';
+                    }}
+                  />
+                  <div className="absolute bottom-2 left-2 right-2 bg-slate-900/60 backdrop-blur-sm rounded-lg p-2">
+                    <p className="text-white text-xs font-semibold">Marketing</p>
+                  </div>
+                </div>
+
+                {/* ✅ FIXED: Design Image */}
+                <div 
+                  className={`relative rounded-xl overflow-hidden h-28 sm:h-32 md:h-36 shadow-lg border border-purple-100 group transition-all duration-700 ${
+                    isVisible[3] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  }`}
+                  style={{ transitionDelay: isVisible[3] ? '500ms' : '0ms' }}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1545235617-9465d2a55698"
+                    alt="Design"
+                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg';
+                    }}
+                  />
+                  <div className="absolute bottom-2 left-2 right-2 bg-slate-900/60 backdrop-blur-sm rounded-lg p-2">
+                    <p className="text-white text-xs font-semibold">Design</p>
+                  </div>
+                </div>
               </div>
             </div>
 
