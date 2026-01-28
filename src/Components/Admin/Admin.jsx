@@ -109,14 +109,7 @@ const Admin = () => {
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
-    {
-      label: "Analytics",
-      icon: BarChart3,
-      path: "#",
-      color: "text-slate-400",
-      bgColor: "bg-slate-50",
-      disabled: true,
-    },
+  
   ];
 
   const isActive = (path) => {

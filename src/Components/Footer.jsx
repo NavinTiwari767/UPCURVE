@@ -41,54 +41,6 @@ const Footer = () => {
     { icon: Linkedin, href: '#', label: 'LinkedIn' }
   ];
 
-  // Policy links that navigate to /policy with hash
-  const policyLinks = [
-    { 
-      name: 'Privacy Policy', 
-      href: '/policy#privacy',
-      onClick: () => {
-        window.scrollTo(0, 0);
-        navigate('/policy#privacy');
-      }
-    },
-    { 
-      name: 'Terms of Service', 
-      href: '/policy#terms',
-      onClick: () => {
-        window.scrollTo(0, 0);
-        navigate('/policy#terms');
-      }
-    },
-    { 
-      name: 'Cookies', 
-      href: '/policy#cookies',
-      onClick: () => {
-        window.scrollTo(0, 0);
-        navigate('/policy#cookies');
-      }
-    }
-  ];
-
-  // Additional policy links for bottom section
-  const additionalPolicyLinks = [
-    { 
-      name: 'Refund & Returns Policy', 
-      href: '/policy#refund',
-      onClick: () => {
-        window.scrollTo(0, 0);
-        navigate('/policy#refund');
-      }
-    },
-    { 
-      name: 'Shipping & Delivery Policy', 
-      href: '/policy#shipping',
-      onClick: () => {
-        window.scrollTo(0, 0);
-        navigate('/policy#shipping');
-      }
-    }
-  ];
-
   // Services with specific routes
   const servicesWithRoutes = [
     { 
@@ -160,6 +112,11 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePrivacyClick = () => {
+    window.scrollTo(0, 0);
+    navigate('/policy#privacy');
+  };
+
   return (
     <div className="w-full overflow-hidden">
       <footer className="bg-gradient-to-br from-white via-purple-50 to-blue-50 pt-16 pb-8 px-4 border-t border-purple-200">
@@ -198,11 +155,9 @@ const Footer = () => {
                     </button>
                   </div>
                   <p className="text-slate-600 text-sm mt-4">
-                    By subscribing, you agree to our <span 
-                      onClick={() => {
-                        handleScrollToTop();
-                        navigate('/policy#privacy');
-                      }}
+                    By subscribing, you agree to our{' '}
+                    <span 
+                      onClick={handlePrivacyClick}
                       className="text-purple-600 hover:text-purple-700 cursor-pointer font-medium"
                     >
                       Privacy Policy
@@ -251,30 +206,6 @@ const Footer = () => {
                     </a>
                   );
                 })}
-              </div>
-
-              {/* Additional Policy Links */}
-              <div className="mt-8 pt-6 border-t border-purple-200">
-                <h4 className="text-sm font-semibold text-slate-700 mb-3">Important Policies</h4>
-                <div className="space-y-2">
-                  {additionalPolicyLinks.map((policy, i) => (
-                    <div 
-                      key={i}
-                      className={`text-sm transform transition-all duration-500 ${
-                        isVisible[1] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'
-                      }`}
-                      style={{ transitionDelay: isVisible[1] ? `${i * 100 + 400}ms` : '0ms' }}
-                    >
-                      <button
-                        onClick={policy.onClick}
-                        className="text-slate-600 hover:text-purple-600 transition-colors flex items-center gap-2 group w-full text-left"
-                      >
-                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                        <span className="group-hover:translate-x-1 transition-transform">{policy.name}</span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -398,7 +329,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Bottom Section with Floating Animation */}
+          {/* Bottom Section - Left: Copyright, Right: Privacy and Developed by WebCros */}
           <div 
             data-animate
             data-index="5"
@@ -408,8 +339,8 @@ const Footer = () => {
                 : 'opacity-0 translate-y-10'
             }`}
           >
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              {/* Copyright */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              {/* Left Side - Copyright */}
               <div className={`transform transition-all duration-700 ${
                 isVisible[5] ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
               }`}>
@@ -418,37 +349,31 @@ const Footer = () => {
                 </p>
               </div>
 
-              {/* Policy Links Only */}
-              <div className={`flex items-center gap-4 text-sm transform transition-all duration-700 delay-100 ${
+              {/* Right Side - Privacy and Developed by WebCros */}
+              <div className={`flex items-center gap-6 text-sm transform transition-all duration-700 delay-100 ${
                 isVisible[5] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
               }`}>
-                {policyLinks.map((item, i) => (
-                  <button
-                    key={i}
-                    onClick={item.onClick}
-                    className="text-slate-600 hover:text-purple-600 transition-colors relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-purple-500 after:transition-all after:duration-300 hover:after:w-full"
-                  >
-                    {item.name}
-                  </button>
-                ))}
-              </div>
-            </div>
+                {/* Privacy Button */}
+                <button
+                  onClick={handlePrivacyClick}
+                  className="text-slate-600 hover:text-purple-600 transition-colors font-medium uppercase tracking-wider"
+                >
+                  Privacy
+                </button>
 
-            {/* Made with love - Floating Animation */}
-            <div 
-              className={`text-center mt-8 text-sm text-slate-600 flex justify-center items-center gap-2 transform transition-all duration-1000 delay-700 ${
-                isVisible[5] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-            >
-              <span>Made with</span>
-              <Heart size={14} className="text-pink-500 fill-pink-500 animate-heartbeat" /> 
-              <span>by</span>
-              <button
-                onClick={handleScrollToTop}
-                className="font-semibold text-purple-600 hover:text-purple-700 transition-colors"
-              >
-                WebCros Team
-              </button>
+                {/* Developed by WebCros */}
+                <div className="text-slate-600">
+                  <span>DEVELOPED BY </span>
+                  <a 
+                    href="https://www.webcros.in/" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-purple-600 hover:text-purple-700 transition-colors"
+                  >
+                    WEBCROS
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

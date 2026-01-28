@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Star, ShoppingCart, Loader } from 'lucide-react';
+import { Star, ShoppingCart, Loader, Plus } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { CartContext } from '../../context/CartContext';
 
@@ -151,9 +151,6 @@ const Services = () => {
     console.log('🛒 ========== handleServiceClick START ==========');
     console.log('🔍 Service clicked:', service.title);
     console.log('🆔 Service ID:', service.id);
-    console.log('👤 Current user:', user);
-    console.log('📧 User email:', user?.email);
-    console.log('🆔 User ID:', user?.id);
     
     // Check if user is logged in
     if (!user) {
@@ -321,30 +318,11 @@ const Services = () => {
         </div>
       )}
 
-      {/* User Status Bar */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-2 px-4 text-center text-sm">
-        {user ? (
-          <div className="flex items-center justify-center gap-2">
-            <span>👋 Welcome, {user.name || user.email}!</span>
-            <span className="text-xs opacity-75">(ID: {user.id?.substring(0, 8)}...)</span>
-          </div>
-        ) : (
-          <span>
-            🔓 <button 
-              onClick={() => navigate('/user-auth')}
-              className="underline hover:text-purple-200"
-            >
-              Login
-            </button> to add items to cart
-          </span>
-        )}
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative h-[400px] overflow-hidden">
+      {/* ✅ UPDATED: Hero Section with more height and padding */}
+      <section className="relative h-[500px] md:h-[550px] overflow-hidden">
         <div className="absolute inset-0">
           <img 
-            src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&h=600&q=80"
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&h=700&q=80" 
             alt="Services"
             className="w-full h-full object-cover"
             onError={() => handleImageError('hero')}
@@ -352,11 +330,12 @@ const Services = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 to-slate-900/50"></div>
         </div>
         
-        <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 animate-fade-in">
+        {/* Content container with more padding */}
+        <div className="relative h-full flex flex-col items-center justify-center text-center px-4 pt-16"> {/* Added pt-16 */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in"> {/* Larger text */}
             Services
           </h1>
-          <div className="flex items-center gap-2 text-white animate-slide-up">
+          <div className="flex items-center gap-2 text-white text-lg animate-slide-up"> {/* Larger text */}
             <span 
               onClick={() => {
                 window.scrollTo(0, 0);
@@ -367,7 +346,7 @@ const Services = () => {
               Home
             </span>
             <span>→</span>
-            <span className="text-purple-400">Services</span>
+            <span className="text-purple-400 font-medium">Services</span>
           </div>
         </div>
       </section>
@@ -448,32 +427,37 @@ const Services = () => {
                           <p className="text-2xl font-bold text-green-600">₹{service.price || 5999}</p>
                         </div>
 
-                        {/* Add to Cart Button */}
+                        {/* ✅ UPDATED: Add to Cart Button with Text */}
                         <div className="md:col-span-5 flex flex-col items-center justify-center gap-4">
-                          <button
-                            onClick={() => handleServiceClick(service)}
-                            className={`w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 cursor-pointer shadow-lg relative ${
-                              isItemInCart 
-                                ? 'bg-gradient-to-br from-green-500 to-green-600 animate-pulse'
-                                : 'bg-gradient-to-br from-purple-400 to-purple-500'
-                            }`}
-                            title={isItemInCart ? "Already in Cart" : user ? "Add to Cart" : "Login to Add"}
-                            disabled={!user && isItemInCart}
-                          >
-                            <ShoppingCart size={28} className="text-white" />
+                          <div className="relative">
+                            <button
+                              onClick={() => handleServiceClick(service)}
+                              className={`px-8 py-3 rounded-full flex items-center gap-3 group-hover:scale-105 group-hover:shadow-lg transition-all duration-300 cursor-pointer shadow-md relative ${
+                                isItemInCart 
+                                  ? 'bg-gradient-to-br from-green-500 to-green-600 animate-pulse'
+                                  : 'bg-gradient-to-br from-purple-400 to-purple-500'
+                              }`}
+                              title={isItemInCart ? "Already in Cart" : user ? "Add to Cart" : "Login to Add"}
+                              disabled={!user && isItemInCart}
+                            >
+                              <ShoppingCart size={20} className="text-white" />
+                              <span className="text-white font-semibold">
+                                {isItemInCart ? "ADDED TO CART" : "ADD TO CART"}
+                              </span>
+                              
+                              {isItemInCart && (
+                                <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-green-500 flex items-center justify-center">
+                                  <span className="text-green-600 text-xs font-bold">✓</span>
+                                </div>
+                              )}
+                            </button>
                             
-                            {isItemInCart && (
-                              <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-green-500 flex items-center justify-center">
-                                <span className="text-green-600 text-xs font-bold">✓</span>
+                            {isRecentlyAdded && (
+                              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                                Added!
                               </div>
                             )}
-                          </button>
-                          
-                          {isRecentlyAdded && (
-                            <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                              Added!
-                            </div>
-                          )}
+                          </div>
                           
                           {/* Google Rating */}
                           <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
