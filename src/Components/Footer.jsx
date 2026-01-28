@@ -14,9 +14,11 @@ import {
   Shield,
   LogOut,
   User,
-  Lock
+  Lock,
+  Loader
 } from 'lucide-react';
 import { getSession, signOut } from '../services/auth';
+import { supabase } from '../services/supabase'; // Added supabase import
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -24,6 +26,14 @@ const Footer = () => {
   const [user, setUser] = useState(null);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
   const [isVisible, setIsVisible] = useState({});
+  
+  // New state for dynamic contact info
+  const [contactInfo, setContactInfo] = useState({
+    phone: { value: '+91 79916 47990', description: 'Call us anytime' },
+    email: { value: 'info@upcurvemedia.com', description: 'Email us' },
+    location: { value: 'Kolkata, India', description: 'Our location' }
+  });
+  const [loadingContactInfo, setLoadingContactInfo] = useState(true);
 
   const quickLinks = [
     { name: 'Home', href: '/' },
@@ -63,6 +73,7 @@ const Footer = () => {
 
   useEffect(() => {
     checkAuth();
+    fetchContactInfo(); // Fetch contact info on load
     
     // Animation trigger on scroll
     const observer = new IntersectionObserver(
@@ -83,6 +94,44 @@ const Footer = () => {
 
     return () => observer.disconnect();
   }, []);
+
+  // Fetch contact info from Supabase
+  const fetchContactInfo = async () => {
+    try {
+      setLoadingContactInfo(true);
+      const { data, error } = await supabase
+        .from('contact_info')
+        .select('*')
+        .order('type', { ascending: true });
+
+      if (error) throw error;
+
+      // Organize data by type
+      const info = {};
+      if (data && data.length > 0) {
+        data.forEach(item => {
+          info[item.type] = {
+            value: item.value,
+            description: item.description || ''
+          };
+        });
+        
+        // Update state only if we have data
+        if (Object.keys(info).length > 0) {
+          setContactInfo(prev => ({
+            ...prev,
+            ...info
+          }));
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Error fetching contact info in footer:', error);
+      // Keep default values if fetch fails
+    } finally {
+      setLoadingContactInfo(false);
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -288,7 +337,7 @@ const Footer = () => {
               </button>
             </div>
 
-            {/* Contact */}
+            {/* Contact - Dynamic Section */}
             <div 
               data-animate
               data-index="4"
@@ -303,33 +352,65 @@ const Footer = () => {
                 Contact Us
               </h3>
               <div className="space-y-4">
+                {/* Phone */}
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
                     <Phone size={16} className="text-purple-600" />
                   </div>
-                  <a href="tel:+917991647990" className="text-slate-700 hover:text-purple-600 transition-colors">
-                    +91 79916 47990
-                  </a>
+                  {loadingContactInfo ? (
+                    <div className="flex items-center gap-2">
+                      <Loader size={14} className="animate-spin text-purple-600" />
+                      <span className="text-slate-600 text-sm">Loading...</span>
+                    </div>
+                  ) : (
+                    <a 
+                      href={`tel:${contactInfo.phone.value}`} 
+                      className="text-slate-700 hover:text-purple-600 transition-colors"
+                    >
+                      {contactInfo.phone.value}
+                    </a>
+                  )}
                 </div>
+
+                {/* Email */}
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
                     <Mail size={16} className="text-purple-600" />
                   </div>
-                  <a href="mailto:info@upcurvemedia.com" className="text-slate-700 hover:text-purple-600 transition-colors">
-                    info@upcurvemedia.com
-                  </a>
+                  {loadingContactInfo ? (
+                    <div className="flex items-center gap-2">
+                      <Loader size={14} className="animate-spin text-purple-600" />
+                      <span className="text-slate-600 text-sm">Loading...</span>
+                    </div>
+                  ) : (
+                    <a 
+                      href={`mailto:${contactInfo.email.value}`} 
+                      className="text-slate-700 hover:text-purple-600 transition-colors"
+                    >
+                      {contactInfo.email.value}
+                    </a>
+                  )}
                 </div>
+
+                {/* Location */}
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
                     <MapPin size={16} className="text-purple-600" />
                   </div>
-                  <p className="text-slate-700">Kolkata, India</p>
+                  {loadingContactInfo ? (
+                    <div className="flex items-center gap-2">
+                      <Loader size={14} className="animate-spin text-purple-600" />
+                      <span className="text-slate-600 text-sm">Loading...</span>
+                    </div>
+                  ) : (
+                    <p className="text-slate-700">{contactInfo.location.value}</p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Section - Left: Copyright, Right: Privacy and Developed by WebCros */}
+          {/* Bottom Section */}
           <div 
             data-animate
             data-index="5"
