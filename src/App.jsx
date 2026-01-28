@@ -22,12 +22,13 @@ import Business from "./Components/Pages/Business";
 import Ecommerce from "./Components/Pages/Ecommerce";
 import Logo from "./Components/Pages/Logo";
 import Policy from "./Components/Pages/Policy";
-import Contact from "./Components/Contact"; // Assuming this exists
+import Contact from "./Components/Contact"; // Public contact page
 
 // Admin
 import Admin from "./Components/Admin/Admin";
 import AdminBlog from "./Components/Admin/AdminBlog";
 import AdminServices from "./Components/Admin/AdminServices";
+import AdminContacts from "./Components/Admin/AdminContacts";
 
 // Auth
 import UserAuth from "./Components/Auth/UserAuth"; // Customer only
@@ -59,11 +60,11 @@ function Layout() {
       <Routes>
         {/* 🌍 PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/contact" element={<Contact />} /> {/* ✅ Public contact form */}
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/custom" element={<Custom />} />
+        <Route path="/custom" element={<Custom />} /> 
         <Route path="/business" element={<Business />} />
         <Route path="/ecommerce" element={<Ecommerce />} />
         <Route path="/logo" element={<Logo />} />
@@ -116,6 +117,16 @@ function Layout() {
           element={
             <AdminProtectedRoute>
               <AdminServices />
+            </AdminProtectedRoute>
+          }
+        />
+
+        {/* ✅ ADMIN CONTACTS ROUTE - FIXED! */}
+        <Route
+          path="/admin/contacts"
+          element={
+            <AdminProtectedRoute>
+              <AdminContacts />
             </AdminProtectedRoute>
           }
         />

@@ -15,6 +15,8 @@ import {
   Plus,
   Edit3,
   ChevronRight,
+  MessageSquare,
+  Mail,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../services/supabase";
@@ -27,6 +29,8 @@ const Admin = () => {
   const [stats, setStats] = useState({
     totalPosts: 0,
     totalServices: 0,
+    totalContacts: 0,
+    newContacts: 0,
     views: 0,
     comments: 0,
   });
@@ -60,11 +64,19 @@ const Admin = () => {
       .from("services")
       .select("id");
 
-    if (!postsError || !servicesError) {
+    const { data: contacts, error: contactsError } = await supabase
+      .from("contacts")
+      .select("id, status");
+
+    if (!postsError || !servicesError || !contactsError) {
+      const newContactsCount = contacts?.filter(c => c.status === 'new').length || 0;
+      
       setStats((prev) => ({
         ...prev,
         totalPosts: posts?.length || 0,
         totalServices: services?.length || 0,
+        totalContacts: contacts?.length || 0,
+        newContacts: newContactsCount,
       }));
     }
   };
@@ -96,7 +108,14 @@ const Admin = () => {
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
-  
+    {
+      label: "Contact Manager",
+      icon: MessageSquare,
+      path: "/admin/contacts",
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+      badge: stats.newContacts > 0 ? stats.newContacts : null,
+    },
   ];
 
   const isActive = (path) => {
@@ -138,7 +157,7 @@ const Admin = () => {
                 key={item.path}
                 onClick={() => !item.disabled && handleNavigate(item.path)}
                 disabled={item.disabled}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${
                   item.disabled
                     ? "opacity-50 cursor-not-allowed"
                     : isActive(item.path)
@@ -154,6 +173,11 @@ const Admin = () => {
                   <item.icon size={20} className={item.color} />
                 </div>
                 <span className="flex-1 text-left">{item.label}</span>
+                {item.badge && (
+                  <span className="px-2 py-1 bg-red-500 text-white text-xs rounded-full font-bold">
+                    {item.badge}
+                  </span>
+                )}
                 {item.disabled && (
                   <span className="text-xs bg-slate-200 px-2 py-1 rounded">
                     Soon
@@ -221,7 +245,7 @@ const Admin = () => {
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
           <div className="max-w-7xl mx-auto space-y-8">
             {/* STATS CARDS */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <StatCard
                 title="Total Posts"
                 value={stats.totalPosts}
@@ -237,11 +261,18 @@ const Admin = () => {
                 trend="+8%"
               />
               <StatCard
-                title="Total Views"
-                value={stats.views}
-                icon={Eye}
+                title="Total Contacts"
+                value={stats.totalContacts}
+                icon={MessageSquare}
+                color="orange"
+                trend="+15%"
+              />
+              <StatCard
+                title="New Messages"
+                value={stats.newContacts}
+                icon={Mail}
                 color="blue"
-                trend="+23%"
+                trend="New"
               />
             </div>
 
@@ -253,7 +284,7 @@ const Admin = () => {
                 </h2>
                 <TrendingUp className="text-purple-600" size={24} />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <ActionCard
                   onClick={() => handleNavigate("/admin/blog")}
                   icon={Plus}
@@ -268,10 +299,16 @@ const Admin = () => {
                   description="Create a new service offering"
                   color="green"
                 />
+                <ActionCard
+                  onClick={() => handleNavigate("/admin/contacts")}
+                  icon={MessageSquare}
+                  title="View Contact Messages"
+                  description="Manage contact form submissions"
+                  color="orange"
+                  badge={stats.newContacts > 0 ? `${stats.newContacts} new` : null}
+                />
               </div>
             </div>
-
-            {/* ✅ RECENT BLOG POSTS SECTION REMOVED */}
           </div>
         </main>
 
@@ -303,6 +340,11 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => {
       text: "text-blue-600",
       border: "border-blue-200",
     },
+    orange: {
+      bg: "bg-orange-50",
+      text: "text-orange-600",
+      border: "border-orange-200",
+    },
   };
 
   const colors = colorClasses[color];
@@ -315,7 +357,7 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => {
         </div>
         {trend && (
           <span className="text-sm text-green-600 font-semibold flex items-center gap-1">
-            <TrendingUp size={14} />
+            {trend !== 'New' && <TrendingUp size={14} />}
             {trend}
           </span>
         )}
@@ -326,7 +368,7 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => {
   );
 };
 
-const ActionCard = ({ onClick, icon: Icon, title, description, color }) => {
+const ActionCard = ({ onClick, icon: Icon, title, description, color, badge }) => {
   const colorClasses = {
     purple: {
       border: "border-purple-200",
@@ -342,6 +384,13 @@ const ActionCard = ({ onClick, icon: Icon, title, description, color }) => {
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
     },
+    orange: {
+      border: "border-orange-200",
+      hoverBorder: "hover:border-orange-400",
+      bg: "hover:bg-orange-50",
+      iconBg: "bg-orange-100",
+      iconColor: "text-orange-600",
+    },
   };
 
   const colors = colorClasses[color];
@@ -349,7 +398,7 @@ const ActionCard = ({ onClick, icon: Icon, title, description, color }) => {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-4 p-5 border-2 ${colors.border} ${colors.hoverBorder} ${colors.bg} rounded-xl transition-all text-left group`}
+      className={`flex items-center gap-4 p-5 border-2 ${colors.border} ${colors.hoverBorder} ${colors.bg} rounded-xl transition-all text-left group relative`}
     >
       <div className={`p-3 ${colors.iconBg} rounded-lg group-hover:scale-110 transition-transform`}>
         <Icon size={24} className={colors.iconColor} />
@@ -357,6 +406,11 @@ const ActionCard = ({ onClick, icon: Icon, title, description, color }) => {
       <div className="flex-1">
         <h3 className="font-semibold text-slate-900">{title}</h3>
         <p className="text-sm text-slate-600 mt-1">{description}</p>
+        {badge && (
+          <span className="inline-block mt-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full font-bold">
+            {badge}
+          </span>
+        )}
       </div>
       <ChevronRight className="text-slate-400 group-hover:text-slate-600" size={20} />
     </button>

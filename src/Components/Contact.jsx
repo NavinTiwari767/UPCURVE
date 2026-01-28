@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Send, Phone, Mail, MapPin } from 'lucide-react';
+import { Send, Phone, Mail, MapPin, CheckCircle } from 'lucide-react';
+// import { supabase } from '../../services/supabase';
+import { supabase } from '../services/supabase';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,8 @@ const Contact = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,11 +22,57 @@ const Contact = () => {
       ...prev,
       [name]: value
     }));
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
-  const handleSubmit = () => {
-    if (formData.firstName && formData.email && formData.phone && formData.message) {
+  const handleSubmit = async () => {
+    // Validation
+    if (!formData.firstName || !formData.email || !formData.phone || !formData.message) {
+      setError('Please fill all required fields');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Phone validation (basic)
+    if (formData.phone.length < 10) {
+      setError('Please enter a valid phone number');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      // Insert data into Supabase
+      const { data, error: submitError } = await supabase
+        .from('contacts')
+        .insert([
+          {
+            first_name: formData.firstName,
+            email: formData.email,
+            phone: formData.phone,
+            service_type: formData.serviceType,
+            message: formData.message,
+            status: 'new'
+          }
+        ])
+        .select();
+
+      if (submitError) throw submitError;
+
+      console.log('✅ Contact form submitted successfully:', data);
+      
+      // Show success message
       setSubmitted(true);
+      
+      // Reset form after 3 seconds
       setTimeout(() => {
         setFormData({
           firstName: '',
@@ -33,8 +83,12 @@ const Contact = () => {
         });
         setSubmitted(false);
       }, 3000);
-    } else {
-      alert('Please fill all fields');
+
+    } catch (err) {
+      console.error('❌ Error submitting contact form:', err);
+      setError('Failed to submit form. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,9 +188,18 @@ const Contact = () => {
             <h3 className="text-3xl font-bold text-slate-900 mb-8">Contact Me</h3>
 
             {submitted && (
-              <div className="mb-8 p-6 bg-green-50 border border-green-300 rounded-xl">
-                <p className="text-green-700 font-semibold text-center">
-                  ✓ Thank you! Your message has been sent successfully. We'll get back to you soon.
+              <div className="mb-8 p-6 bg-green-50 border border-green-300 rounded-xl flex items-center gap-3">
+                <CheckCircle className="text-green-600" size={24} />
+                <p className="text-green-700 font-semibold">
+                  Thank you! Your message has been sent successfully. We'll get back to you soon.
+                </p>
+              </div>
+            )}
+
+            {error && (
+              <div className="mb-8 p-6 bg-red-50 border border-red-300 rounded-xl">
+                <p className="text-red-700 font-semibold">
+                  ⚠️ {error}
                 </p>
               </div>
             )}
@@ -146,7 +209,7 @@ const Contact = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
-                    First Name
+                    First Name *
                   </label>
                   <input
                     type="text"
@@ -154,19 +217,21 @@ const Contact = () => {
                     value={formData.firstName}
                     onChange={handleChange}
                     placeholder="First Name"
+                    required
                     className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
-                    Message
+                    Message *
                   </label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Type Your Message"
+                    required
                     rows="4"
                     className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition resize-none"
                   />
@@ -177,7 +242,7 @@ const Contact = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
-                    Phone Number
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -185,13 +250,14 @@ const Contact = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Phone Number"
+                    required
                     className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
-                    Email Address
+                    Email Address *
                   </label>
                   <input
                     type="email"
@@ -199,6 +265,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Email Address"
+                    required
                     className="w-full px-6 py-4 bg-slate-50 border border-purple-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition"
                   />
                 </div>
@@ -207,7 +274,7 @@ const Contact = () => {
               {/* Third Row - Service Type */}
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-3 uppercase">
-                  Select Service Type
+                  Select Service Type *
                 </label>
                 <select
                   name="serviceType"
@@ -234,10 +301,15 @@ const Contact = () => {
               <div className="flex items-center gap-4 pt-4">
                 <button
                   onClick={handleSubmit}
-                  className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group"
+                  disabled={loading}
+                  className={`px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 flex items-center gap-2 group ${
+                    loading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  <span>Send Message</span>
-                  <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+                  <span>{loading ? 'Sending...' : 'Send Message'}</span>
+                  {!loading && (
+                    <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+                  )}
                 </button>
                 <p className="text-slate-600 text-sm">We'll get back to you within 24 hours</p>
               </div>
