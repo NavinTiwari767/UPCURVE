@@ -28,7 +28,7 @@ import Contact from "./Components/Contact"; // Public contact page
 import Admin from "./Components/Admin/Admin";
 import AdminBlog from "./Components/Admin/AdminBlog";
 import AdminServices from "./Components/Admin/AdminServices";
-import AdminContacts from "./Components/Admin/Admincontacts";
+import AdminContacts from "./Components/Admin/AdminContacts";
 import AdminContactInfo from "./Components/Admin/AdminContactInfo";
 
 // Auth
