@@ -25,11 +25,11 @@ import Policy from "./Components/Pages/Policy";
 import Contact from "./Components/Contact"; // Public contact page
 
 // Admin
-import Admin from "./Components/Admin/Admin";
-import AdminBlog from "./Components/Admin/AdminBlog";
-import AdminServices from "./Components/Admin/AdminServices";
-import AdminContacts from "./Components/Admin/AdminContacts";
-import AdminContactInfo from "./Components/Admin/AdminContactInfo";
+import Admin from "./Components/Admin/Admin.jsx";
+import AdminBlog from "./Components/Admin/AdminBlog.jsx";
+import AdminServices from "./Components/Admin/AdminServices.jsx";
+import AdminContacts from "./Components/Admin/AdminContacts.jsx";
+import AdminContactInfo from "./Components/Admin/AdminContactInfo.jsx";
 
 // Auth
 import UserAuth from "./Components/Auth/UserAuth"; // Customer only
